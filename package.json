@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "paste",
+  "version": "1.0.0",
+  "description": "A template for kick starting a Cloudflare Workers project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write '**/*.{js,css,json,md}'"
+  },
+  "author": "Peter Cai <peter@typeblog.net>",
+  "license": "MIT",
+  "devDependencies": {
+    "aws-sdk": "^2.619.0",
+    "blob-polyfill": "^4.0.20190430",
+    "coffee-loader": "^0.9.0",
+    "coffeescript": "^2.5.1",
+    "json-loader": "^0.5.7",
+    "webpack": "^4.41.6"
+  }
+}
