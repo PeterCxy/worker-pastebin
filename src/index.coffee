@@ -46,7 +46,7 @@ handlePUT = (req, file) ->
 
   # Upload the file to S3
   try
-    await s3.uploadFile
+    await s3.uploadFile # TODO: expiry date
       Key: path
       ContentType: req.headers.get "content-type"
       ContentLength: len
