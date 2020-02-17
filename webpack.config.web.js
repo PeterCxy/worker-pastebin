@@ -5,7 +5,7 @@ var path = require("path")
 module.exports = {
   target: "web",
   entry: "./index-web.js",
-  mode: "production",
+  mode: "development",
   output: {
     path: path.resolve(__dirname, "./worker"),
     filename: "web.js"
@@ -26,6 +26,14 @@ module.exports = {
   ],
   module: {
     rules: [
+      {
+        test: /\.css$/,
+        use: [ 'style-loader', 'css-loader' ]
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [ 'url-loader' ]
+      },
       {
         test: /\.coffee$/,
         use: [ 'babel-loader', 'coffee-loader' ]
