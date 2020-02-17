@@ -70,7 +70,8 @@ handleGET = (req, file) ->
       status: 404
   # The full path to the original file
   fullPath = files.Contents[0].Key
-  fileName = fullPath.split('/')[-1]
+  fileName = fullPath.split '/'
+                    .pop _
 
   # Build options and downlaod the file from origin
   options = {}
