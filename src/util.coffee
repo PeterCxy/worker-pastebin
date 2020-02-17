@@ -34,10 +34,10 @@ idToPath = (id) ->
 
 # Determine if we show something inline or not
 shouldShowInline = (mime) ->
-  mime.startsWith 'text/' or
-    mime.startsWith 'image/' or
-    mime.startsWith 'audio/' or
-    mime.startsWith 'video/' or
+  mime.startsWith('text/') or
+    mime.startsWith('image/') or
+    mime.startsWith('audio/') or
+    mime.startsWith('video/') or
     mime == 'application/json' or
     mime == 'application/javascript'
 
