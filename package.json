@@ -6,15 +6,28 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write '**/*.{js,css,json,md}'"
+    "format": "prettier --write '**/*.{js,css,json,md}'",
+    "build-web": "webpack-cli --config webpack.config.web.js",
+    "build": "npm run build-web && wrangler build",
+    "preview": "npm run build-web && wrangler preview"
   },
   "author": "Peter Cai <peter@typeblog.net>",
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-react": "^7.8.3",
+    "babel-loader": "^8.0.6",
     "coffee-loader": "^0.9.0",
     "coffeescript": "^2.5.1",
     "fast-xml-parser": "^3.16.0",
+    "html-webpack-inline-source-plugin": "0.0.10",
+    "html-webpack-plugin": "^3.2.0",
     "json-loader": "^0.5.7",
-    "webpack": "^4.41.6"
+    "raw-loader": "^4.0.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
   }
 }

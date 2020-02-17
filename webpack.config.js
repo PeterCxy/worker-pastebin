@@ -19,6 +19,10 @@ module.exports = {
         type: 'javascript/auto',
         test: /\.json$/,
         use: [ 'json-loader' ]
+      },
+      {
+        test: /\.html$/,
+        use: [ 'raw-loader' ]
       }
     ]
   }

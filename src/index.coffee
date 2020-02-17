@@ -2,6 +2,7 @@ import * as util from './util'
 import _ from './prelude'
 import S3 from './aws/s3'
 import config from '../config.json'
+import indexHtml from '../worker/index.html'
 
 s3 = new S3 config
 
@@ -16,6 +17,15 @@ buildInvalidResponse = (msg) ->
     status: 400
 
 handleRequest = (event) ->
+  # Handle request for static home page first
+  if event.request.method == "GET"
+    parsedURL = new URL event.request.url
+    if parsedURL.pathname == "/" || parsedURL.pathname == "/paste/"
+      return new Response indexHtml,
+        status: 200
+        headers:
+          'content-type': 'text/html'
+
   # Validate file name first, since this is shared logic
   file = util.getFileName event.request.url
   if not file
