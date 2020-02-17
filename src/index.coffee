@@ -60,8 +60,52 @@ handlePUT = (req, file) ->
     status: 200
 
 handleGET = (req, file) ->
-  new Response "Hello, Coffee! file: " + file,
-    headers:
-      "content-type": "text/plain"
+  path = util.idToPath file
+  # Find the file first, because ID is only the path part
+  # We still need the real file name
+  files = await s3.listObjects
+    prefix: path
+  if !files.Contents or files.Contents.length == 0
+    return new Response "Not Found",
+      status: 404
+  # The full path to the original file
+  fullPath = files.Contents[0].Key[0]
+  fileName = fullPath.split('/')[-1]
+
+  # Build options and downlaod the file from origin
+  options = {}
+  # Handle range header
+  if req.headers.has "range"
+    options["range"] = req.headers.get "range"
+
+  resp = await s3.getObject fullPath, options
+  if not resp.ok
+    return new Response "Something went wrong",
+      status: resp.status
+
+  # Build response headers
+  headers =
+    'content-length': resp.headers.get 'content-length'
+    # TODO: handle text/* with a code viewer of some sort
+    'content-type': resp.headers.get 'content-type'
+
+  # Prevent executing random HTML / XML by treating all text as `text/plain`
+  if headers['content-type'].startsWith 'text/'
+    headers['content-type'] = 'text/plain'
+
+  # Add content-disposition header to indicate file name
+  if headers['content-type'].startsWith 'image/'
+    headers['content-disposition'] = 'inline; filename=' + fileName
+  else
+    headers['content-disposition'] = 'attachment; filename=' + fileName
+
+  # Handle ranged resposes
+  if resp.headers.has 'content-range'
+    headers['content-range'] = resp.headers.get 'content-range'
+
+  new Response resp.body,
+    status: resp.status
+    headers: headers
+
 
 export default main

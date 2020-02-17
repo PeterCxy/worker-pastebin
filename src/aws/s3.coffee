@@ -76,4 +76,11 @@ class S3
     else
       txt
 
+  # params are processed similar to putObject
+  # returns the full response object (because content-range may be needed)
+  getObject: (key, params) ->
+    @request @baseURL + key, null,
+      method: 'GET'
+      headers: @makeHeaders params
+
 export default S3
