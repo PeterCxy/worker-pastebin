@@ -1,5 +1,5 @@
 import AwsAuth from "./auth"
-import { parseStringPromise as parseXML } from "xml2js"
+import parser from "fast-xml-parser"
 
 class S3
   constructor: (@conf) ->
@@ -50,10 +50,12 @@ class S3
     if not resp.ok
       # no error handling yet
       throw txt
-    result = await parseXML txt
+    result = parser.parse txt,
+      arrayMode: true
+    console.log result
     if not result.ListBucketResult
       return null
-    result.ListBucketResult
+    result.ListBucketResult[0]
 
   # params are in CamelCase, but converted to x-amz-* headers automatically
   # Content* headers are exempt from the x-amz-* prefix, as well as Expires

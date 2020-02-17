@@ -65,11 +65,11 @@ handleGET = (req, file) ->
   # We still need the real file name
   files = await s3.listObjects
     prefix: path
-  if !files.Contents or files.Contents.length == 0
+  if not files.Contents or files.Contents.length == 0
     return new Response "Not Found",
       status: 404
   # The full path to the original file
-  fullPath = files.Contents[0].Key[0]
+  fullPath = files.Contents[0].Key
   fileName = fullPath.split('/')[-1]
 
   # Build options and downlaod the file from origin
