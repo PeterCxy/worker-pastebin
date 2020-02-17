@@ -1,10 +1,11 @@
 import * as util from './util'
-import * as s3 from './s3'
 import _ from './prelude'
+import S3 from './aws/s3'
+import config from '../config.json'
+
+s3 = new S3 config
 
 main = ->
-  s3.loadAWSConfig _
-
   addEventListener 'fetch', (event) =>
     event.respondWith handleRequest event
 
@@ -38,19 +39,18 @@ handlePUT = (req, file) ->
   loop
     id = util.randomID _
     path = util.idToPath id
-    files = await s3.listFiles path
-    break if !files or files.length == 0
+    files = await s3.listObjects
+      prefix: path
+    break if !files.Contents or files.Contents.length == 0
   
   path = path + "/" + file
   len = req.headers.get "content-length"
 
   # Upload the file to S3
   try
-    await s3.uploadFile # TODO: expiry date
-      Key: path
+    await s3.putObject path, req.body, # Expiration should be configured on S3 side
       ContentType: req.headers.get "content-type"
       ContentLength: len
-      Body: await util.readToBlob req.body
   catch err
     console.log err
     return buildInvalidResponse err

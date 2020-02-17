@@ -32,22 +32,10 @@ idToPath = (id) ->
   id.split ''
     .join '/'
 
-# Convert a ReadableStream into Blob
-# AWS-SDK does not support ReadableStream, unfortunately
-readToBlob = (stream) ->
-  reader = stream.getReader()
-  ret = []
-  loop
-    { done, value } = await reader.read()
-    break if done
-    ret.push value
-  new Blob ret
-
 export {
   getFileName,
   validateLength,
   MAX_UPLOAD_SIZE,
   randomID,
-  idToPath,
-  readToBlob
+  idToPath
 }
