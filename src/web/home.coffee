@@ -1,5 +1,5 @@
 import React from "react"
-import "./styles/home.css"
+import "./styles/home.scss"
 
 class Home extends React.Component
   constructor: (props) ->

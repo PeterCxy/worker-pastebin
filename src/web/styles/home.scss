@@ -1,0 +1,33 @@
+$content-padding: 100px;
+$content-width: 1000px;
+$content-height: 600px;
+$content-total-height: $content-height + 2 * $content-padding;
+
+.content-wrapper {
+    width: 100vw;
+    padding-top: $content-padding;
+    padding-bottom: $content-padding;
+    background-image: url('../assets/spikes.png');
+    background-repeat: repeat;
+    text-align: center;
+}
+
+.content {
+    display: inline-block;
+    background-color: #FFFFFF;
+    width: $content-width;
+    height: $content-height;
+    box-shadow: 0 2px 5px 5px rgba(0, 0, 0, 0.15);
+    border-radius: 20px;
+}
+
+/*
+ * when screen is higher than content + padding
+ */
+@media screen and ( min-height: $content-total-height ) {
+    .content-wrapper {
+        max-height: 100vh;
+        padding-top: calc((100vh - #{$content-height}) / 2);
+        padding-bottom: calc((100vh - #{$content-height}) / 2);
+    }
+}
