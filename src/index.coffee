@@ -87,6 +87,7 @@ handleGET = (req, file) ->
   # Build response headers
   headers =
     'content-length': resp.headers.get 'content-length'
+    'accept-ranges': 'bytes'
     # TODO: handle text/* with a code viewer of some sort
     'content-type': resp.headers.get 'content-type'
 
