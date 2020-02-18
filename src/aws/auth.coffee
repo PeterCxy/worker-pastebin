@@ -77,7 +77,8 @@ class AwsAuth
       @headerMap['x-amz-content-sha256']
 
   canonicalURI: ->
-    encodeURI @url.pathname
+    # new URL already handles URI encoding for the pathname. No need to repeat here.
+    @url.pathname
 
   canonicalQueryString: ->
     return "" if not @qsMap

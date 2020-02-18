@@ -113,7 +113,7 @@ handleGET = (req, file) ->
   # Add content-disposition header to indicate file name
   inline = util.shouldShowInline headers['content-type']
   headers['content-disposition'] =
-    (if inline then 'inline;' else 'attachment;') + ' filename=' + fileName
+    (if inline then 'inline;' else 'attachment;') + ' filename*=' + encodeURIComponent fileName
 
   # Handle ranged resposes
   if resp.headers.has 'content-range'
