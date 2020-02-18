@@ -17,6 +17,11 @@
     padding: $content-inset;
 }
 
+.content-buttons {
+    margin-top: $content-inset;
+    text-align: right;
+}
+
 /*
  * when screen is higher than content + padding
  */

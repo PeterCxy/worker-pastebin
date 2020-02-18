@@ -1,12 +1,10 @@
-.content-buttons {
-    margin-top: $content-inset;
-}
-
 @mixin base-button {
     border: none;
     outline: none;
     color: white;
     padding: 10px 24px;
+    margin-left: $button-margin-left;
+    margin-right: $button-margin-right;
     text-align: center;
     text-decoration: none;
     display: inline-block;

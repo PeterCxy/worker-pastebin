@@ -39,12 +39,12 @@ class ContentEditable extends React.Component
       nextProps.highlightCode != @props.highlightCode
 
   componentDidUpdate: ->
-    if @props.value != @getText()
-      @setText @props.value
-      # Note that we will only update when the value passed by parent
-      # is different than what we know, i.e. the parent requested
-      # a change in value
-      @codeHighlight()
+    #if @props.value != @getText()
+    @setText @props.value
+    # Note that we will only update when the value passed by parent
+    # is different than what we know, i.e. the parent requested
+    # a change in value
+    @codeHighlight()
 
   emitUpdate: =>
     if @props.onUpdate

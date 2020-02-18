@@ -7,11 +7,16 @@ class Pastebin extends React.Component
     @state =
       text: ""
       pasting: false
+      highlight: true
 
   onEditTextUpdate: (ev) =>
     console.log ev.target.value
     @setState
       text: ev.target.value
+
+  toggleHighlight: (ev) =>
+    @setState (state, props) =>
+      { highlight: not state.highlight }
 
   paste: =>
     return if @state.text.trim() == ""
@@ -52,10 +57,16 @@ class Pastebin extends React.Component
         className="content-pastebin-edit"
         onUpdate={@onEditTextUpdate}
         value={@state.text}
-        highlightCode
+        highlightCode={@state.highlight}
         plainText
       />
       <div className="content-buttons">
+        <button
+          className="button-blue"
+          onClick={@toggleHighlight}
+        >
+          Highlight: {if @state.highlight then 'ON' else 'OFF'}
+        </button>
         <button
           className="button-blue"
           disabled={@state.pasting}
