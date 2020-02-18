@@ -6,11 +6,36 @@ class Pastebin extends React.Component
     super props
     @state =
       text: ""
+      pasting: false
 
   onEditTextUpdate: (ev) =>
     console.log ev.target.value
     @setState
       text: ev.target.value
+
+  paste: =>
+    return if @state.text.trim() == ""
+    # Set the state first to disable the button
+    @setState
+      pasting: true
+    # For things pasted through the web interface,
+    # we always assume the name is `web_paste.txt`,
+    # and the content type is always `text/plain`.
+    resp = await fetch "/paste/web_paste.txt",
+      method: 'PUT'
+      headers:
+        'content-type': 'text/plain'
+      body: @state.text
+    console.log resp
+    # Ok reponse
+    if resp.ok
+      # Body is the paste url
+      url = await resp.text()
+      console.log url
+      # TODO: show a dialog or something
+    # Reset the button
+    @setState
+      pasting: false
 
   render: ->
     <div className="content-pastebin">
@@ -20,6 +45,14 @@ class Pastebin extends React.Component
         value={@state.text}
         highlightCode
         plainText/>
+      <div className="content-buttons">
+        <button
+          className="button-blue"
+          disabled={@state.pasting}
+          onClick={@paste}>
+          Paste
+        </button>
+      </div>
     </div>
 
 export default Pastebin
