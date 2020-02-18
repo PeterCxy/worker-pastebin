@@ -1,0 +1,10 @@
+// Configurations for contentEditable
+$editable-color: rgba(0, 0, 0, 0.1);
+$editable-color-active: rgba(0, 0, 0, 0.2);
+$editable-radius: 5px;
+// Dimensions of main content card
+$content-padding: 100px;
+$content-width: 1000px;
+$content-height: 600px;
+$content-total-height: $content-height + 2 * $content-padding;
+$content-radius: 20px;

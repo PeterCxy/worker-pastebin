@@ -1,5 +1,5 @@
 import React from "react"
-import "./styles/home.scss"
+import Pastebin from "./pastebin"
 
 class Home extends React.Component
   constructor: (props) ->
@@ -8,6 +8,7 @@ class Home extends React.Component
   render: ->
     <div className="content-wrapper">
       <div className="content">
+        <Pastebin />
       </div>
     </div>
 

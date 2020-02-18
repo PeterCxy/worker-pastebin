@@ -1,0 +1,15 @@
+.editable {
+    display: block;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    padding: 10px;
+    outline: none;
+    border: 1px solid $editable-color;
+    border-radius: $editable-radius;
+    transition: border-color 0.4s linear;
+}
+
+.editable:focus {
+    border-color: $editable-color-active;
+}

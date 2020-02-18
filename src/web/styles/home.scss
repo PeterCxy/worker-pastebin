@@ -1,8 +1,3 @@
-$content-padding: 100px;
-$content-width: 1000px;
-$content-height: 600px;
-$content-total-height: $content-height + 2 * $content-padding;
-
 .content-wrapper {
     width: 100vw;
     padding-top: $content-padding;
@@ -18,7 +13,8 @@ $content-total-height: $content-height + 2 * $content-padding;
     width: $content-width;
     height: $content-height;
     box-shadow: 0 2px 5px 5px rgba(0, 0, 0, 0.15);
-    border-radius: 20px;
+    border-radius: $content-radius;
+    padding: $content-radius;
 }
 
 /*

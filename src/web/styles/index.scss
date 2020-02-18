@@ -1,3 +1,10 @@
+// -- Prelude --
+@import './vars.scss';
+// -- Styles --
+@import './contentEditable.scss';
+@import './home.scss';
+@import './pastebin.scss';
+
 body, html {
     margin: 0px;
     padding: 0px;
