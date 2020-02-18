@@ -57,12 +57,14 @@ class Pastebin extends React.Component
         onUpdate={@onEditTextUpdate}
         value={@state.text}
         highlightCode
-        plainText/>
+        plainText
+      />
       <div className="content-buttons">
         <button
           className="button-blue"
           disabled={@state.pasting}
-          onClick={@paste}>
+          onClick={@paste}
+        >
           Paste
         </button>
       </div>
