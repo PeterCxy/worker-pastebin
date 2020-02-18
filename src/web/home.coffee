@@ -1,6 +1,9 @@
 import React from "react"
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom"
+import { AnimatedSwitch } from 'react-router-transition'
 import ReactModal from "react-modal"
 import Pastebin from "./pastebin"
+import BinaryUpload from "./binaryUpload"
 
 class Home extends React.Component
   constructor: (props) ->
@@ -17,7 +20,24 @@ class Home extends React.Component
   render: ->
     <div className="content-wrapper">
       <div className="content">
-        <Pastebin openDialog={@openDialog}/>
+        <Router>
+          <AnimatedSwitch
+            atEnter={{ opacity: 0 }}
+            atLeave={{ opacity: 0 }}
+            atActive={{ opacity: 1 }}
+            className="switch-wrapper"
+          >
+            <Redirect exact from="/" to="/paste/text" />
+            <Route
+              exact path="/paste/text"
+              component={() => <Pastebin openDialog={@openDialog}/>}
+            />
+            <Route
+              exact path="/paste/binary"
+              component={() => <BinaryUpload openDialog={@openDialog}/>}
+            />
+          </AnimatedSwitch>
+        </Router>
       </div>
       {
         # Provide modal dialog for all child

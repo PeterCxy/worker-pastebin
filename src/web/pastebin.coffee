@@ -1,4 +1,5 @@
 import React from "react"
+import { Redirect } from "react-router-dom"
 import ContentEditable from "./util/contentEditable"
 
 class Pastebin extends React.Component
@@ -8,6 +9,7 @@ class Pastebin extends React.Component
       text: ""
       pasting: false
       highlight: true
+      switchToUpload: false
 
   onEditTextUpdate: (ev) =>
     console.log ev.target.value
@@ -52,6 +54,9 @@ class Pastebin extends React.Component
       pasting: false
 
   render: ->
+    if @state.switchToUpload
+      return <Redirect to="/paste/binary/" />
+
     <div className="content-pastebin">
       <ContentEditable
         className="content-pastebin-edit"
@@ -66,6 +71,13 @@ class Pastebin extends React.Component
           onClick={@toggleHighlight}
         >
           Highlight: {if @state.highlight then 'ON' else 'OFF'}
+        </button>
+        <button
+          className="button-blue"
+          disabled={@state.pasting}
+          onClick={(ev) => @setState { switchToUpload: true }}
+        >
+          File Upload
         </button>
         <button
           className="button-blue"
