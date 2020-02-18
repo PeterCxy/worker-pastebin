@@ -8,7 +8,7 @@ class Pastebin extends React.Component
     @state =
       text: ""
       pasting: false
-      highlight: true
+      highlight: false # Make this false by default to avoid blocking
       switchToUpload: false
 
   onEditTextUpdate: (ev) =>
