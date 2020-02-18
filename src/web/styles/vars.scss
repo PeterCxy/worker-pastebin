@@ -1,5 +1,6 @@
 // Material shadows
 // <https://codepen.io/sdthornton/pen/wBZdXq>
+$shadow-medium: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 $shadow-large: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 // Configurations for contentEditable
 $editable-color: rgba(0, 0, 0, 0.1);
@@ -17,4 +18,4 @@ $content-padding: 100px;
 $content-width: 1000px;
 $content-height: 600px;
 $content-total-height: $content-height + 2 * $content-padding;
-$content-radius: 20px;
+$content-radius: 12px;
