@@ -9,7 +9,13 @@ class ContentEditable extends React.Component
     super props
 
   getText: ->
-    if @props.plainText then @domNode.innerText else @domNode.innerHTML
+    console.log @domNode.innerHTML
+    do =>
+      if @props.plainText
+        @domNode.innerText
+      else
+        @domNode.innerHTML
+    .replace /\u200C/g, ''
 
   setText: (text) ->
     if @props.plainText
@@ -63,12 +69,19 @@ class ContentEditable extends React.Component
             .insertNode document.createTextNode paste
     ev.preventDefault()
 
+  onKeyDown: (ev) =>
+    if ev.keyCode == 13
+      # Without U+200C, the new line will not work properly
+      document.execCommand 'insertHTML', false, '<br>\u200C'
+      ev.preventDefault()
+
   render: ->
     <div
       className={"#{@props.className} editable"}
       onInput={@emitUpdate}
       onBlur={@onBlur}
       onPaste={@onPaste}
+      onKeyDown={@onKeyDown}
       spellCheck={false}
       contentEditable/>
 
