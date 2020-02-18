@@ -9,7 +9,7 @@
     "format": "prettier --write '**/*.{js,css,json,md}'",
     "build-web": "webpack-cli --config webpack.config.web.js",
     "build": "npm run build-web && wrangler build",
-    "preview": "npm run build-web && wrangler preview"
+    "preview": "NODE_ENV=development npm run build-web && wrangler preview"
   },
   "author": "Peter Cai <peter@typeblog.net>",
   "license": "MIT",

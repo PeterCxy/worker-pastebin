@@ -1,10 +1,12 @@
+var process = require("process")
+
 module.exports = {
   target: "webworker",
   entry: "./index.js",
-  mode: "production",
+  mode: "production", // CF Worker only works in production mode
   optimization: {
 		// We no not want to minimize our code.
-		minimize: false
+		minimize: process.env.NODE_ENV == "production"
   },
   resolve: {
     extensions: ['.js', '.coffee']

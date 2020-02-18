@@ -1,18 +1,19 @@
 var HtmlWebpackPlugin = require("html-webpack-plugin")
 var HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin")
 var path = require("path")
+var process = require("process")
 
 module.exports = {
   target: "web",
   entry: "./index-web.js",
-  mode: "development",
+  mode: process.env.NODE_ENV ? process.env.NODE_ENV : "development",
   output: {
     path: path.resolve(__dirname, "./worker"),
     filename: "web.js"
   },
   optimization: {
 		// We no not want to minimize our code.
-		minimize: false
+		minimize: process.env.NODE_ENV == "production"
   },
   resolve: {
     extensions: ['.js', '.coffee']
