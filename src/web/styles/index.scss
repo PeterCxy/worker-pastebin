@@ -2,6 +2,7 @@
 @import './vars.scss';
 // -- Styles --
 @import './contentEditable.scss';
+@import './dialog.scss';
 @import './home.scss';
 @import './pastebin.scss';
 @import './buttons.scss';
@@ -9,4 +10,25 @@
 body, html {
     margin: 0px;
     padding: 0px;
+}
+
+a {
+    color: #00bcd4;
+}
+
+a:link {
+    text-decoration: none;
+}
+  
+a:visited {
+    color: #00bcd4;
+    text-decoration: none;
+}
+  
+a:hover {
+    text-decoration: underline;
+}
+  
+a:active {
+    text-decoration: underline;
 }

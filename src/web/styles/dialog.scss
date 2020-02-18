@@ -1,0 +1,54 @@
+.ReactModal__Content_My {
+    display: flex;
+    flex-flow: column;
+    position: absolute;
+    width: $dialog-width;
+    height: $dialog-height;
+    left: calc((100vw - #{$dialog-width}) / 2);
+    top: $dialog-margin;
+    background-color: white;
+    outline: none;
+    border: none;
+    border-radius: $dialog-radius;
+    box-shadow: $shadow-large;
+    padding: $dialog-radius * 3;
+
+    p {
+        display: inline-block;
+        flex: 1;
+        box-sizing: border-box;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    }
+
+    .dialog-buttons {
+        text-align: right;
+    }
+}
+
+.ReactModal__Overlay {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+
+    .ReactModal__Content_My {
+        transform: translateY(-#{$dialog-height});
+        transition: transform 0.5s ease-in-out;
+    }
+}
+
+.ReactModal__Overlay--after-open {
+    opacity: 1;
+
+    .ReactModal__Content_My {
+        transform: none;
+    }
+}
+
+.ReactModal__Overlay--before-close {
+    opacity: 0;
+
+    .ReactModal__Content_My {
+        transform: translateY(-#{$dialog-height});
+    }
+}

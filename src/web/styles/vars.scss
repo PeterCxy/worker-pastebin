@@ -1,9 +1,17 @@
+// Material shadows
+// <https://codepen.io/sdthornton/pen/wBZdXq>
+$shadow-large: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 // Configurations for contentEditable
 $editable-color: rgba(0, 0, 0, 0.1);
 $editable-color-active: rgba(0, 0, 0, 0.2);
 $editable-radius: 5px;
 // Button dimensions
 $button-radius: 5px;
+// Dialogs
+$dialog-width: 500px;
+$dialog-height: 200px;
+$dialog-margin: 50px;
+$dialog-radius: 5px;
 // Dimensions of main content card
 $content-padding: 100px;
 $content-width: 1000px;

@@ -1,4 +1,5 @@
 import React from "react"
+import ReactModal from "react-modal"
 import ContentEditable from "./util/contentEditable"
 
 class Pastebin extends React.Component
@@ -7,6 +8,8 @@ class Pastebin extends React.Component
     @state =
       text: ""
       pasting: false
+      dialogMsg: null
+      dialogOpen: false
 
   onEditTextUpdate: (ev) =>
     console.log ev.target.value
@@ -27,12 +30,22 @@ class Pastebin extends React.Component
         'content-type': 'text/plain'
       body: @state.text
     console.log resp
-    # Ok reponse
+    txt = await resp.text()
+    console.log txt
     if resp.ok
-      # Body is the paste url
-      url = await resp.text()
-      console.log url
-      # TODO: show a dialog or something
+      msg =
+        <a href={txt} target="_blank">
+          https://{window.location.hostname}{txt}
+        </a>
+    else
+      msg = txt
+
+    @setState
+      text: ""
+      # Open dialog
+      dialogOpen: true
+      dialogMsg: msg
+
     # Reset the button
     @setState
       pasting: false
@@ -53,6 +66,21 @@ class Pastebin extends React.Component
           Paste
         </button>
       </div>
+      <ReactModal
+        isOpen={@state.dialogOpen}
+        className="ReactModal__Content_My"
+        closeTimeoutMS={500}
+      >
+        <p>{@state.dialogMsg}</p>
+        <div className="dialog-buttons">
+          <button
+            className="button-blue"
+            onClick={(e) => @setState { dialogOpen: false }}
+          >
+            Close
+          </button>
+        </div>
+      </ReactModal>
     </div>
 
 export default Pastebin
