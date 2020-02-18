@@ -12,7 +12,12 @@
     display: inline-block;
     font-size: 16px;
     border-radius: $button-radius;
-    transition: background-color 0.2s linear;
+    transition: $material-transition;
+    box-shadow: $shadow-small;
+
+    &:hover {
+        box-shadow: $shadow-medium;
+    }
 
     &:active, &:hover, &::-moz-focus-inner {
         outline: none;
