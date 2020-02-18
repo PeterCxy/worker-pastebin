@@ -9,7 +9,8 @@
     "format": "prettier --write '**/*.{js,css,json,md}'",
     "build-web": "webpack-cli --config webpack.config.web.js",
     "build": "npm run build-web && wrangler build",
-    "preview": "NODE_ENV=development npm run build-web && wrangler preview"
+    "preview": "NODE_ENV=development npm run build-web && wrangler preview",
+    "upload": "NODE_ENV=production npm run build-web && wrangler publish"
   },
   "author": "Peter Cai <peter@typeblog.net>",
   "license": "MIT",
