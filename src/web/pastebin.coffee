@@ -55,7 +55,7 @@ class Pastebin extends React.Component
 
   render: ->
     if @state.switchToUpload
-      return <Redirect to="/paste/binary/" />
+      return <Redirect to="/paste/binary" />
 
     <div className="content-pastebin">
       <ContentEditable

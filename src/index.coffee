@@ -4,6 +4,11 @@ import S3 from './aws/s3'
 import config from '../config.json'
 import indexHtml from '../worker/index.html'
 
+FRONTEND_PATHS = [
+  '/', '/paste/text', '/paste/binary',
+  '/paste/text/', '/paste/binary/'
+]
+
 s3 = new S3 config
 
 main = ->
@@ -20,7 +25,7 @@ handleRequest = (event) ->
   # Handle request for static home page first
   if event.request.method == "GET"
     parsedURL = new URL event.request.url
-    if parsedURL.pathname == "/" || parsedURL.pathname == "/paste/"
+    if parsedURL.pathname in FRONTEND_PATHS
       return new Response indexHtml,
         status: 200
         headers:
