@@ -1,0 +1,17 @@
+// Some blend of both editable and pastebin style
+.content-code-viewer {
+    display: block;
+    flex: 1;
+    overflow-y: auto;
+    text-align: left;
+    box-sizing: border-box;
+    font-family: monospace;
+    padding: 10px;
+    outline: none;
+    border: 1px solid $editable-color;
+    border-radius: $editable-radius;
+
+    pre {
+        margin: 0;
+    }
+}

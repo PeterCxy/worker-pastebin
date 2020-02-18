@@ -22,6 +22,7 @@
     "coffee-loader": "^0.9.0",
     "coffeescript": "^2.5.1",
     "css-loader": "^3.4.2",
+    "detect-browser": "^4.8.0",
     "fast-xml-parser": "^3.16.0",
     "highlight.js": "^9.18.1",
     "html-webpack-inline-source-plugin": "0.0.10",

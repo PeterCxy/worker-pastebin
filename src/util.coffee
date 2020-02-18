@@ -1,3 +1,5 @@
+import { detect as detectBrowser } from 'detect-browser'
+
 # Maimum upload size (in bytes)
 MAX_UPLOAD_SIZE = 10 * 1024 * 1024 # 10 MB
 
@@ -34,12 +36,20 @@ idToPath = (id) ->
 
 # Determine if we show something inline or not
 shouldShowInline = (mime) ->
-  mime.startsWith('text/') or
+  isText(mime) or
     mime.startsWith('image/') or
     mime.startsWith('audio/') or
-    mime.startsWith('video/') or
+    mime.startsWith('video/')
+
+isText = (mime) ->
+  mime.startsWith('text/') or
     mime == 'application/json' or
     mime == 'application/javascript'
+
+# Determine if we consider the user a browser or not
+isBrowser = (req) ->
+  b = detectBrowser req.headers.get 'user-agent'
+  (not b) or (b.name != 'searchbot')
 
 export {
   getFileName,
@@ -47,5 +57,7 @@ export {
   MAX_UPLOAD_SIZE,
   randomID,
   idToPath,
-  shouldShowInline
+  shouldShowInline,
+  isBrowser,
+  isText
 }

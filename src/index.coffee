@@ -21,15 +21,18 @@ buildInvalidResponse = (msg) ->
   new Response msg,
     status: 400
 
+buildFrontendResponse = ->
+  new Response indexHtml,
+    status: 200
+    headers:
+      'content-type': 'text/html'
+
 handleRequest = (event) ->
   # Handle request for static home page first
   if event.request.method == "GET"
     parsedURL = new URL event.request.url
     if parsedURL.pathname in FRONTEND_PATHS
-      return new Response indexHtml,
-        status: 200
-        headers:
-          'content-type': 'text/html'
+      return buildFrontendResponse _
 
   # Validate file name first, since this is shared logic
   file = util.getFileName event.request.url
@@ -98,6 +101,14 @@ handleGET = (req, file) ->
   if not resp.ok
     return new Response "Something went wrong",
       status: resp.status
+
+  # If the content is text, and the user is using a browser
+  # show frontend code viewer
+  if not req.url.endsWith 'original'
+    isText = util.isText resp.headers.get 'content-type'
+    isBrowser = util.isBrowser req
+    if isText and isBrowser
+      return buildFrontendResponse _
 
   # Build response headers
   headers =

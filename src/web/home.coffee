@@ -4,6 +4,7 @@ import { AnimatedSwitch } from 'react-router-transition'
 import ReactModal from "react-modal"
 import Pastebin from "./pastebin"
 import BinaryUpload from "./binaryUpload"
+import CodeViewer from "./codeViewer"
 
 class Home extends React.Component
   constructor: (props) ->
@@ -35,6 +36,10 @@ class Home extends React.Component
             <Route
               exact path="/paste/binary"
               component={() => <BinaryUpload openDialog={@openDialog}/>}
+            />
+            <Route
+              path="/paste/:id"
+              component={CodeViewer}
             />
           </AnimatedSwitch>
         </Router>
