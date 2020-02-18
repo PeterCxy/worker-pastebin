@@ -11,7 +11,7 @@
     border: none;
     border-radius: $dialog-radius;
     box-shadow: $shadow-large;
-    padding: $dialog-radius * 3;
+    padding: $dialog-inset;
 
     p {
         display: inline-block;

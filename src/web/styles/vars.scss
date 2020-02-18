@@ -7,18 +7,19 @@ $material-transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 // Configurations for contentEditable
 $editable-color: rgba(0, 0, 0, 0.1);
 $editable-color-active: rgba(57, 73, 171, 0.4);
-$editable-radius: 5px;
+$editable-radius: 2px;
 // Button dimensions
-$button-radius: 5px;
+$button-radius: 3px;
 // Dialogs
 $dialog-width: 500px;
 $dialog-height: 200px;
 $dialog-margin: 50px;
-$dialog-radius: 5px;
+$dialog-radius: 2px;
+$dialog-inset: 15px;
 // Dimensions of main content card
 $content-padding: 100px;
 $content-width: 1000px;
 $content-height: 600px;
 $content-total-height: $content-height + 2 * $content-padding;
-$content-radius: 5px;
+$content-radius: 2px;
 $content-inset: 12px;
