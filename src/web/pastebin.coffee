@@ -18,6 +18,7 @@ class Pastebin extends React.Component
         className="content-pastebin-edit"
         onUpdate={@onEditTextUpdate}
         value={@state.text}
+        highlightCode
         plainText/>
     </div>
 

@@ -1,5 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom"
+import hljs from "highlight.js"
 
 # Wrapper for a content-editable div
 # <https://stackoverflow.com/questions/22677931/react-js-onchange-event-for-contenteditable>
@@ -16,6 +17,10 @@ class ContentEditable extends React.Component
     else
       @domNode.innerHTML = text
 
+  codeHighlight: ->
+    if @props.plainText and @props.highlightCode
+      @domNode.innerHTML = hljs.highlightAuto(@domNode.innerText).value
+
   componentDidMount: ->
     @domNode = ReactDOM.findDOMNode @
 
@@ -23,11 +28,17 @@ class ContentEditable extends React.Component
     @domNode = null
 
   shouldComponentUpdate: (nextProps) ->
-    nextProps.value != @getText()
+    nextProps.value != @getText() or
+      nextProps.plainText != @props.plainText or
+      nextProps.highlightCode != @props.highlightCode
 
   componentDidUpdate: ->
     if @props.value != @getText()
       @setText @props.value
+      # Note that we will only update when the value passed by parent
+      # is different than what we know, i.e. the parent requested
+      # a change in value
+      @codeHighlight()
 
   emitUpdate: =>
     if @props.onUpdate
@@ -36,6 +47,10 @@ class ContentEditable extends React.Component
       @props.onUpdate
         target:
           value: @getText()
+
+  onBlur: =>
+    @codeHighlight()
+    @emitUpdate()
 
   onPaste: (ev) =>
     return false if not @props.plainText
@@ -52,7 +67,7 @@ class ContentEditable extends React.Component
     <div
       className={"#{@props.className} editable"}
       onInput={@emitUpdate}
-      onBlur={@emitUpdate}
+      onBlur={@onBlur}
       onPaste={@onPaste}
       spellCheck={false}
       contentEditable/>
