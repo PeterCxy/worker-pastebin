@@ -19,6 +19,7 @@ class FileDecrypter extends React.Component
       progress: 0
       key: key
       iv: iv
+      downloaded: null
 
   componentDidMount: ->
     # Fetch metadata to show to user
@@ -60,9 +61,11 @@ class FileDecrypter extends React.Component
     @setState
       decrypting: true
     decrypted = await crypto.decryptFile @state.key, @state.iv, file
-    util.browserSaveFile @state.mime, @state.name, decrypted
+    blob = new Blob [decrypted],
+      type: @state.mime
     @setState
       decrypting: false
+      downloaded: blob
 
   render: ->
     <div className="content-pastebin">{
@@ -73,18 +76,31 @@ class FileDecrypter extends React.Component
           <p>{@state.name}</p>
           <p>{@state.mime}</p>
           <p>{util.humanFileSize @state.length}</p>
-          <button
-            className="button-blue"
-            disabled={@state.downloading}
-            onClick={@downloadFile}
-          >{
-            if not @state.downloading
-              "Download"
-            else if @state.decrypting
-              "Decrypting"
+          {
+            if not @state.downloaded
+              <button
+                className="button-blue"
+                disabled={@state.downloading}
+                onClick={@downloadFile}
+              >{
+                if not @state.downloading
+                  "Download"
+                else if @state.decrypting
+                  "Decrypting"
+                else
+                  util.progressText @state.progress
+              }</button>
             else
-              util.progressText @state.progress
-          }</button>
+              # Use an actual link here instead of triggering click
+              # on a hidden link, because on some browsers it doesn't work
+              <a
+                className="button-blue"
+                href={URL.createObjectURL @state.downloaded}
+                download={@state.name}
+              >
+                Save File
+              </a>
+          }
         </div>
     }</div>
 

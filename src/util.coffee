@@ -59,20 +59,6 @@ progressText = (progress) ->
   else
     txt
 
-# Browser: save a file from ArrayBuffer
-browserSaveFile = (mime, name, file) ->
-  link = document.createElement 'a'
-  link.style.display = 'none';
-  document.body.appendChild link
-
-  blob = new Blob [file],
-    type: mime
-  objUrl = URL.createObjectURL blob
-
-  link.href = objUrl
-  link.download = name
-  link.click()
-
 # Convert a file size to human-readable form
 # <https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string>
 humanFileSize = (bytes, si) ->
@@ -102,6 +88,5 @@ export {
   isBrowser,
   isText,
   progressText,
-  browserSaveFile,
   humanFileSize
 }
