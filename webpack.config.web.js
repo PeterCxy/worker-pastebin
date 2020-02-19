@@ -21,7 +21,10 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       inlineSource: '.(js|css)$', // embed all javascript and css inline
-      title: 'Angry.Im Pastebin'
+      title: 'Angry.Im Pastebin',
+      meta: {
+        viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
+      }
     }),
     new HtmlWebpackInlineSourcePlugin()
   ],

@@ -12,6 +12,7 @@
     border-radius: $dialog-radius;
     box-shadow: $shadow-large;
     padding: $dialog-inset;
+    box-sizing: border-box;
 
     p {
         display: inline-block;
@@ -50,5 +51,16 @@
 
     .ReactModal__Content_My {
         transform: translateY(-#{$dialog-height});
+    }
+}
+
+/*
+ * When the screen cannot accomodate the full dialog (e.g. mobile)
+ */
+@media screen and ( max-width: $dialog-width ) {
+    .ReactModal__Content_My {
+        width: 100vw;
+        left: 0;
+        top: $dialog-margin / 2;
     }
 }

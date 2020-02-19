@@ -15,6 +15,7 @@
     box-shadow: $shadow-medium;
     border-radius: $content-radius;
     padding: $content-inset;
+    box-sizing: border-box;
 
     .switch-wrapper, .switch-wrapper > div {
         width: 100%;
@@ -31,7 +32,10 @@
 }
 
 .content-buttons {
-    margin-top: $content-inset;
+    // Cancel the vertical margin of the first and last button row
+    // (but not all the other rows, when they are arranged in multiple rows)
+    margin-top: $content-inset - $button-margin-vertical;
+    margin-bottom: -$button-margin-vertical;
     text-align: right;
 }
 
@@ -43,5 +47,22 @@
         max-height: 100vh;
         padding-top: calc((100vh - #{$content-height}) / 2);
         padding-bottom: calc((100vh - #{$content-height}) / 2);
+    }
+}
+
+/*
+ * when screen is smaller than the normal content area, e,g, mobile
+ */
+@media screen and ( max-width: $content-width ) {
+    .content {
+        width: 100vw;
+        max-width: 100%;
+    }
+
+    @media screen and ( max-height: $content-height + $content-padding ) {
+        .content-wrapper {
+            padding-top: $content-padding / 2;
+            padding-bottom: $content-padding / 2;
+        }
     }
 }

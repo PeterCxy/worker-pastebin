@@ -5,6 +5,9 @@
     padding: 10px 24px;
     margin-left: $button-margin-left;
     margin-right: $button-margin-right;
+    // Needed because on mobile buttons can get vertical
+    margin-top: $button-margin-vertical;
+    margin-bottom: $button-margin-vertical;
     text-align: center;
     text-decoration: none;
     display: inline-block;
