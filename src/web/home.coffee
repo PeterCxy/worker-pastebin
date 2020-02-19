@@ -29,8 +29,8 @@ class Home extends React.Component
         <Router>
           <AnimatedSwitch
             atEnter={{ opacity: 0, translateY: -5 }}
-            atLeave={{ opacity: 0, translateY: bounce -5 }}
-            atActive={{ opacity: 1, translateY: bounce 0 }}
+            atLeave={{ opacity: bounce(0), translateY: bounce(-5) }}
+            atActive={{ opacity: bounce(1), translateY: bounce(0) }}
             mapStyles={(styles) ->
               opacity: styles.opacity
               transform: "translateY(#{styles.translateY}%)"
