@@ -1,0 +1,5 @@
+{
+  "comments": "This file contains configuration that will be load into the browser frontend. See src/util.coffee for details.",
+  "max_upload_size": 10485760,
+  "file_lifetime": "7 days"
+}

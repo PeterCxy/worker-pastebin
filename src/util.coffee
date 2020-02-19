@@ -1,7 +1,16 @@
+import configInsec from "../config.insecure.json"
 import { detect as detectBrowser } from 'detect-browser'
 
+# The following two items are read from `config.insecure.json`
+# These configuration will be load into the frontend, so make sure
+# no sensitive information is leaked through the json
 # Maximum upload size (in bytes)
-MAX_UPLOAD_SIZE = 10 * 1024 * 1024 # 10 MB
+MAX_UPLOAD_SIZE = configInsec.max_upload_size
+# File lifetime (deleted after X days)
+# This is only intended for human, any auto-deletion
+# should be configured in your S3 bucket
+FILE_LIFETIME = configInsec.file_lifetime
+
 # Maximum file name length
 MAX_FILENAME_LENGTH = 255 # bytes
 
@@ -91,5 +100,6 @@ export {
   isText,
   progressText,
   humanFileSize,
-  MAX_FILENAME_LENGTH
+  MAX_FILENAME_LENGTH,
+  FILE_LIFETIME
 }

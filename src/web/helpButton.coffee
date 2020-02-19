@@ -19,7 +19,7 @@ class HelpButton extends React.Component
           There is <strong>absolutely no guarantee</strong> on its functionality, security and reliability.
         </p>
         <p>
-          <strong>Maximum file size: {util.humanFileSize util.MAX_UPLOAD_SIZE}</strong>, all uploads are kept for <strong>7 days</strong> only.
+          <strong>Maximum file size: {util.humanFileSize util.MAX_UPLOAD_SIZE}</strong>, all uploads are kept for <strong>{util.FILE_LIFETIME}</strong> only.
         </p>
         <p>
           File uploads with <strong>"Encryption: ON"</strong> are encrypted with <i>AES-128-GCM</i> before uploading to server.
