@@ -29,13 +29,17 @@ class Home extends React.Component
             className="switch-wrapper"
           >
             <Redirect exact from="/" to="/paste/text" />
+            {
+              # Use `render` instead of `component` to prevent re-rendering the child
+              # when parent is re-rendered (however this prevents passing match props)
+            }
             <Route
               exact path="/paste/text"
-              component={() => <Pastebin openDialog={@openDialog}/>}
+              render={() => <Pastebin openDialog={@openDialog}/>}
             />
             <Route
               exact path="/paste/binary"
-              component={() => <BinaryUpload openDialog={@openDialog}/>}
+              render={() => <BinaryUpload openDialog={@openDialog}/>}
             />
             <Route
               path="/paste/:id"
