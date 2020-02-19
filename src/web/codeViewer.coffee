@@ -1,6 +1,6 @@
 import React from "react"
-import { Redirect } from "react-router-dom"
 import hljs from "highlight.js"
+import LinkButton from "./util/linkButton"
 
 MAX_HIGHLIGHT_LENGTH = 10 * 1024 # 10 KiB
 
@@ -9,7 +9,6 @@ class CodeViewer extends React.Component
     super props
     @state =
       code: "Loading..."
-      switchToHome: false
       highlight: true
 
   componentDidMount: ->
@@ -42,12 +41,13 @@ class CodeViewer extends React.Component
         }
       </div>
       <div className="content-buttons">
-        <button
+        <LinkButton
           className="button-blue"
-          onClick={(ev) => @setState { switchToHome: true }}
+          push
+          to="/paste/text"
         >
           New Paste
-        </button>
+        </LinkButton>
       </div>
     </div>
 

@@ -1,5 +1,5 @@
 import React from "react"
-import { Link } from "react-router-dom"
+import LinkButton from "./util/linkButton"
 import * as crypto from "../crypto"
 import * as util from "../util"
 
@@ -119,12 +119,13 @@ class FileDecrypter extends React.Component
               </a>
           }
           <br/>
-          <Link
+          <LinkButton
             className="button-blue"
+            push
             to="/paste/text"
           >
             Home
-          </Link>
+          </LinkButton>
         </div>
     }</div>
 

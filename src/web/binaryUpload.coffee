@@ -1,6 +1,6 @@
 import React from "react"
-import { Redirect } from "react-router-dom"
 import Dropzone from "react-dropzone"
+import LinkButton from "./util/linkButton"
 import * as crypto from "../crypto"
 import * as util from "../util"
 
@@ -11,7 +11,6 @@ class BinaryUpload extends React.Component
       file: null
       uploading: false
       progress: 0
-      switchToText: false
       encrypt: false
       encrypting: false
 
@@ -70,9 +69,6 @@ class BinaryUpload extends React.Component
       { encrypt: not state.encrypt }
 
   render: ->
-    if @state.switchToText
-      return <Redirect to="/paste/text" />
-
     <div className="content-pastebin">
       <Dropzone onDrop={@onDrop}>
         {({getRootProps, getInputProps}) => 
@@ -100,13 +96,13 @@ class BinaryUpload extends React.Component
         >
           { "Encrypt: " + if @state.encrypt then "ON" else "OFF" }
         </button>
-        <button
+        <LinkButton
           className="button-blue"
           disabled={@state.uploading}
-          onClick={(ev) => @setState { switchToText: true }}
+          to="/paste/text"
         >
           Text Mode
-        </button>
+        </LinkButton>
         <button
           className="button-blue"
           disabled={@state.uploading or not @state.file}
