@@ -1,4 +1,5 @@
 import React from "react"
+import HelpButton from "./helpButton"
 import LinkButton from "./util/linkButton"
 import ContentEditable from "./util/contentEditable"
 
@@ -62,6 +63,7 @@ class Pastebin extends React.Component
         plainText
       />
       <div className="content-buttons">
+        <HelpButton openDialog={@props.openDialog} />
         <button
           className="button-blue"
           onClick={@toggleHighlight}

@@ -1,5 +1,6 @@
 import React from "react"
 import Dropzone from "react-dropzone"
+import HelpButton from "./helpButton"
 import LinkButton from "./util/linkButton"
 import * as crypto from "../crypto"
 import * as util from "../util"
@@ -89,6 +90,7 @@ class BinaryUpload extends React.Component
         }
       </Dropzone>
       <div className="content-buttons">
+        <HelpButton openDialog={@props.openDialog} />
         <button
           className="button-blue"
           disabled={@state.uploading}

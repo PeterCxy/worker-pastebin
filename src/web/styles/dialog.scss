@@ -1,9 +1,12 @@
 .ReactModal__Content_My {
+    font-family: sans-serif;
+    font-size: 14px;
     display: flex;
     flex-flow: column;
     position: absolute;
     width: $dialog-width;
-    height: $dialog-height;
+    min-height: $dialog-height;
+    max-height: 80vh;
     left: calc((100vw - #{$dialog-width}) / 2);
     top: $dialog-margin;
     background-color: white;
@@ -14,13 +17,14 @@
     padding: $dialog-inset;
     box-sizing: border-box;
 
-    p {
+    > p {
         display: inline-block;
         flex: 1;
         box-sizing: border-box;
         white-space: pre-wrap;
         overflow-wrap: break-word;
         word-wrap: break-word;
+        overflow-y: auto;
     }
 
     .dialog-buttons {
