@@ -49,7 +49,7 @@ isText = (mime) ->
 # Determine if we consider the user a browser or not
 isBrowser = (req) ->
   b = detectBrowser req.headers.get 'user-agent'
-  (not b) or (b.name != 'searchbot')
+  b and (b.name != 'searchbot')
 
 export {
   getFileName,
