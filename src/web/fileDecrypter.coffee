@@ -36,6 +36,10 @@ class FileDecrypter extends React.Component
       mime: mime
       length: parseInt resp.headers.get 'content-length'
 
+  componentWillUnmount: ->
+    if @state.downloaded
+      URL.revokeObjectURL @state.downloaded
+
   downloadFile: =>
     @setState
       downloading: true
@@ -65,7 +69,8 @@ class FileDecrypter extends React.Component
       type: @state.mime
     @setState
       decrypting: false
-      downloaded: blob
+      blob: blob
+      downloaded: URL.createObjectURL blob
 
   render: ->
     <div className="content-pastebin">{
@@ -95,7 +100,7 @@ class FileDecrypter extends React.Component
               # on a hidden link, because on some browsers it doesn't work
               <a
                 className="button-blue"
-                href={URL.createObjectURL @state.downloaded}
+                href={@state.downloaded}
                 download={@state.name}
               >
                 Save File
