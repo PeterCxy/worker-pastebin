@@ -49,6 +49,8 @@ handleRequest = (event) ->
 handlePUT = (req, file) ->
   if not util.validateLength req
     return buildInvalidResponse "Maximum upload size: " + util.MAX_UPLOAD_SIZE
+  if file.length > util.MAX_FILENAME_LENGTH
+    return buildInvalidResponse "File name too long (max #{util.MAX_FILENAME_LENGTH})"
   
   # Generate a valid ID first
   id = null

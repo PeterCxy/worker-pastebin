@@ -2,6 +2,8 @@ import { detect as detectBrowser } from 'detect-browser'
 
 # Maimum upload size (in bytes)
 MAX_UPLOAD_SIZE = 10 * 1024 * 1024 # 10 MB
+# Maximum file name length
+MAX_FILENAME_LENGTH = 255 # bytes
 
 # Validate content-length header
 validateLength = (req) ->
@@ -88,5 +90,6 @@ export {
   isBrowser,
   isText,
   progressText,
-  humanFileSize
+  humanFileSize,
+  MAX_FILENAME_LENGTH
 }
