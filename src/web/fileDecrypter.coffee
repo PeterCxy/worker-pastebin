@@ -49,10 +49,10 @@ class FileDecrypter extends React.Component
           progress: e.loaded / e.total
     xhr.addEventListener 'readystatechange', =>
       if xhr.readyState == XMLHttpRequest.DONE
+        if xhr.status == 200
+          await @decryptFile xhr.response
         @setState
           downloading: false
-        return if xhr.status != 200 # We always fail silently here
-        @decryptFile xhr.response
     xhr.open 'GET', @originalUrl
     xhr.send()
 
