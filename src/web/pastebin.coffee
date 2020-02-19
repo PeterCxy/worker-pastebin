@@ -43,7 +43,7 @@ class Pastebin extends React.Component
           https://{window.location.hostname}{txt}
         </a>
       else
-        msg = txt
+        txt
 
     @setState
       text: ""
