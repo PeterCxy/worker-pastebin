@@ -79,7 +79,7 @@ class Pastebin extends React.Component
         </LinkButton>
         <button
           className="button-blue"
-          disabled={@state.pasting}
+          disabled={@state.pasting or @state.text.trim() is ""}
           onClick={@paste}
         >
           Paste
