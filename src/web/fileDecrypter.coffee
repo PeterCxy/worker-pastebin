@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "react-router-dom"
 import * as crypto from "../crypto"
 import * as util from "../util"
 
@@ -106,6 +107,13 @@ class FileDecrypter extends React.Component
                 Save File
               </a>
           }
+          <br/>
+          <Link
+            className="button-blue"
+            to="/paste/text"
+          >
+            Home
+          </Link>
         </div>
     }</div>
 

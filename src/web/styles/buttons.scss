@@ -1,7 +1,7 @@
 @mixin base-button {
     border: none;
     outline: none;
-    color: white;
+    color: white !important;
     padding: 10px 24px;
     margin-left: $button-margin-left;
     margin-right: $button-margin-right;
