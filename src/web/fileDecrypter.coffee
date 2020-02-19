@@ -106,6 +106,17 @@ class FileDecrypter extends React.Component
               >
                 Save File
               </a>
+          }{
+            # In-browser previewing for certain file types
+            # we can't just use this for all because it cannot handle file name
+            @state.downloaded and util.shouldShowInline(@state.mime) and
+              <a
+                className="button-blue"
+                href={@state.downloaded}
+                target="_blank"
+              >
+                Preview
+              </a>
           }
           <br/>
           <Link
