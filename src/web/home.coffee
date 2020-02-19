@@ -1,10 +1,15 @@
 import React from "react"
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom"
-import { AnimatedSwitch } from 'react-router-transition'
+import { AnimatedSwitch, spring } from 'react-router-transition'
 import ReactModal from "react-modal"
 import Pastebin from "./pastebin"
 import BinaryUpload from "./binaryUpload"
 import FileViewerDispatcher from "./fileViewerDispatcher"
+
+bounce = (val) ->
+  spring val,
+    stiffness: 330
+    damping: 22
 
 class Home extends React.Component
   constructor: (props) ->
@@ -23,9 +28,13 @@ class Home extends React.Component
       <div className="content">
         <Router>
           <AnimatedSwitch
-            atEnter={{ opacity: 0 }}
-            atLeave={{ opacity: 0 }}
-            atActive={{ opacity: 1 }}
+            atEnter={{ opacity: 0, translateY: -5 }}
+            atLeave={{ opacity: 0, translateY: bounce -5 }}
+            atActive={{ opacity: 1, translateY: bounce 0 }}
+            mapStyles={(styles) ->
+              opacity: styles.opacity
+              transform: "translateY(#{styles.translateY}%)"
+            }
             className="switch-wrapper"
           >
             <Redirect exact from="/" to="/paste/text" />
