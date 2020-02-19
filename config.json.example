@@ -1,0 +1,11 @@
+{
+  "aws": {
+    "accessKeyId": "MY_ACCESS_KEY",
+    "secretAccessKey": "TOP_SECRET",
+    "region": "some-region-1"
+  },
+  "s3": {
+    "endpoint": "https://s3.amazonaws.com",
+    "bucket": "my-awesome-bucket"
+  }
+}
