@@ -1,6 +1,7 @@
 import React from "react"
 import { Redirect } from "react-router-dom"
 import Dropzone from "react-dropzone"
+import * as crypto from "../crypto"
 
 class BinaryUpload extends React.Component
   constructor: (props) ->
@@ -10,14 +11,19 @@ class BinaryUpload extends React.Component
       uploading: false
       progress: 0
       switchToText: false
+      encrypt: false
+      encrypting: false
 
   onDrop: (files) =>
     @setState
       file: files[0]
 
   doUpload: =>
+    key = null
+    iv = null
     @setState
       uploading: true
+      encrypting: @state.encrypt
       progress: 0
     # Due to the lack of progress feature in current Fetch API
     # We have to use XHR for now. Dang.
@@ -30,16 +36,30 @@ class BinaryUpload extends React.Component
       if xhr.readyState == XMLHttpRequest.DONE
         @setState
           uploading: false
+          encrypting: false
           file: null
-        @props.openDialog do ->
+        @props.openDialog do =>
           if xhr.status == 200
-            <a href={xhr.responseText} target="_blank">
-              https://{window.location.hostname}{xhr.responseText}
+            url = if not @state.encrypt
+              xhr.responseText
+            else
+              xhr.responseText + "?crypt#" + key + "+" + iv
+            <a href={url} target="_blank">
+              https://{window.location.hostname}{url}
             </a>
           else
             xhr.responseText
-    xhr.open 'PUT', '/paste/' + @state.file.name
-    xhr.send @state.file
+
+    if not @state.encrypt
+      xhr.open 'PUT', '/paste/' + @state.file.name
+      xhr.send @state.file
+    else
+      [key, iv, name, mime, encrypted] = await crypto.encryptFile @state.file
+      xhr.open 'PUT', '/paste/' + name
+      xhr.setRequestHeader 'content-type', mime
+      xhr.send encrypted
+      @setState
+        encrypting: false
 
   progressText: ->
     txt = (@state.progress * 100).toFixed(2) + "%"
@@ -47,6 +67,10 @@ class BinaryUpload extends React.Component
       "0" + txt
     else
       txt
+
+  toggleEncrypt: =>
+    @setState (state, props) ->
+      { encrypt: not state.encrypt }
 
   render: ->
     if @state.switchToText
@@ -75,6 +99,13 @@ class BinaryUpload extends React.Component
         <button
           className="button-blue"
           disabled={@state.uploading}
+          onClick={@toggleEncrypt}
+        >
+          { "Encrypt: " + if @state.encrypt then "ON" else "OFF" }
+        </button>
+        <button
+          className="button-blue"
+          disabled={@state.uploading}
           onClick={(ev) => @setState { switchToText: true }}
         >
           Text Mode
@@ -87,6 +118,8 @@ class BinaryUpload extends React.Component
           {
             if not @state.uploading
               "Upload"
+            else if @state.encrypting
+              "Encrypting"
             else
               @progressText()
           }
