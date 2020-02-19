@@ -51,6 +51,47 @@ isBrowser = (req) ->
   b = detectBrowser req.headers.get 'user-agent'
   b and (b.name != 'searchbot')
 
+# Process progress text
+progressText = (progress) ->
+  txt = (progress * 100).toFixed(2) + "%"
+  if progress < 0.1
+    "0" + txt
+  else
+    txt
+
+# Browser: save a file from ArrayBuffer
+browserSaveFile = (mime, name, file) ->
+  link = document.createElement 'a'
+  link.style.display = 'none';
+  document.body.appendChild link
+
+  blob = new Blob [file],
+    type: mime
+  objUrl = URL.createObjectURL blob
+
+  link.href = objUrl
+  link.download = name
+  link.click()
+
+# Convert a file size to human-readable form
+# <https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string>
+humanFileSize = (bytes, si) ->
+  thresh = if si then 1000 else 1024
+  if Math.abs bytes < thresh
+    bytes + " B"
+  else
+    units = do ->
+      if si
+        ['kB','MB','GB','TB','PB','EB','ZB','YB']
+      else
+        ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB']
+    u = -1
+    loop
+      bytes /= thresh
+      ++u
+      break if not (Math.abs(bytes) >= thresh and u < units.length - 1)
+    bytes.toFixed(1) + ' ' + units[u]
+
 export {
   getFileName,
   validateLength,
@@ -59,5 +100,8 @@ export {
   idToPath,
   shouldShowInline,
   isBrowser,
-  isText
+  isText,
+  progressText,
+  browserSaveFile,
+  humanFileSize
 }

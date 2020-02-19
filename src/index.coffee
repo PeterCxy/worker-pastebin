@@ -86,6 +86,10 @@ handleGET = (req, file) ->
   if not files.Contents or files.Contents.length == 0
     return new Response "Not Found",
       status: 404
+  else if req.url.endsWith "crypt"
+    # We need frontend to handle encrypted files
+    # The key is passed after the hash ('#'), unavailable to server
+    return buildFrontendResponse _
   # The full path to the original file
   fullPath = files.Contents[0].Key
   fileName = fullPath.split '/'

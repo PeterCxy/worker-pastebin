@@ -4,7 +4,7 @@ import { AnimatedSwitch } from 'react-router-transition'
 import ReactModal from "react-modal"
 import Pastebin from "./pastebin"
 import BinaryUpload from "./binaryUpload"
-import CodeViewer from "./codeViewer"
+import FileViewerDispatcher from "./fileViewerDispatcher"
 
 class Home extends React.Component
   constructor: (props) ->
@@ -39,7 +39,7 @@ class Home extends React.Component
             />
             <Route
               path="/paste/:id"
-              component={CodeViewer}
+              component={FileViewerDispatcher}
             />
           </AnimatedSwitch>
         </Router>

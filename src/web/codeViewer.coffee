@@ -13,7 +13,7 @@ class CodeViewer extends React.Component
       highlight: true
 
   componentDidMount: ->
-    resp = await fetch "/paste/#{@props.match.params.id}?original"
+    resp = await fetch "/paste/#{@props.id}?original"
     resp = await resp.text()
     if resp.length < MAX_HIGHLIGHT_LENGTH
       resp = hljs.highlightAuto(resp).value

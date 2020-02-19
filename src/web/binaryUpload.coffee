@@ -2,6 +2,7 @@ import React from "react"
 import { Redirect } from "react-router-dom"
 import Dropzone from "react-dropzone"
 import * as crypto from "../crypto"
+import * as util from "../util"
 
 class BinaryUpload extends React.Component
   constructor: (props) ->
@@ -62,11 +63,7 @@ class BinaryUpload extends React.Component
         encrypting: false
 
   progressText: ->
-    txt = (@state.progress * 100).toFixed(2) + "%"
-    if @state.progress < 0.1
-      "0" + txt
-    else
-      txt
+    util.progressText @state.progress
 
   toggleEncrypt: =>
     @setState (state, props) ->
