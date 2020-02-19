@@ -1,5 +1,4 @@
 import * as util from './util'
-import _ from './prelude'
 import S3 from './aws/s3'
 import config from '../config.json'
 import indexHtml from '../worker/index.html'
@@ -32,12 +31,12 @@ handleRequest = (event) ->
   if event.request.method == "GET"
     parsedURL = new URL event.request.url
     if parsedURL.pathname in FRONTEND_PATHS
-      return buildFrontendResponse _
+      return buildFrontendResponse()
 
   # Validate file name first, since this is shared logic
   file = util.getFileName event.request.url
   if not file
-    return buildInvalidResponse _
+    return buildInvalidResponse()
 
   # Handle PUT and GET separately
   if event.request.method == "PUT"
@@ -45,7 +44,7 @@ handleRequest = (event) ->
   else if event.request.method == "GET"
     handleGET event.request, file
   else
-    buildInvalidResponse _
+    buildInvalidResponse()
 
 handlePUT = (req, file) ->
   if not util.validateLength req
@@ -55,7 +54,7 @@ handlePUT = (req, file) ->
   id = null
   path = null
   loop
-    id = util.randomID _
+    id = util.randomID()
     path = util.idToPath id
     files = await s3.listObjects
       prefix: path
@@ -89,11 +88,11 @@ handleGET = (req, file) ->
   else if req.url.endsWith "crypt"
     # We need frontend to handle encrypted files
     # The key is passed after the hash ('#'), unavailable to server
-    return buildFrontendResponse _
+    return buildFrontendResponse()
   # The full path to the original file
   fullPath = files.Contents[0].Key
   fileName = fullPath.split '/'
-                    .pop _
+                    .pop()
 
   # Build options and downlaod the file from origin
   options = {}
@@ -112,7 +111,7 @@ handleGET = (req, file) ->
     isText = util.isText resp.headers.get 'content-type'
     isBrowser = util.isBrowser req
     if isText and isBrowser
-      return buildFrontendResponse _
+      return buildFrontendResponse()
 
   # Build response headers
   headers =
