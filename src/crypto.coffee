@@ -6,7 +6,7 @@ fromUtf8Bytes = (bytes) ->
   new TextDecoder 'utf-8'
       .decode bytes
 
-hex = (buf) -> (Array.prototype.map.call new Uint8Array(buf),
+hex = (buf) -> (Array::map.call new Uint8Array(buf),
   (x) => ('00' + x.toString 16).slice(-2)).join ''
 
 fromHex = (str) ->
