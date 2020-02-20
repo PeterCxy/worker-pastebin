@@ -31,6 +31,11 @@ export default HelpButton = ->
           The decryption will also be done entirely in your browser. Therefore, it is not supported to access encrypted files outside of a modern browser.&nbsp;
           If you plan to download the shared file from outside the browser (e.g. command line) or on a low-performance device, use <strong>"Encryption: OFF"</strong>.
         </p>
+        <p>
+          Please <strong>refrain from uploading illegal content and / or abusing the service</strong>. This service is provided by the maintainer for convenience,&nbsp;
+          but failure to keep reasonable usage of the service may result in your content being removed before the {util.FILE_LIFETIME.replace " ", "-"} mark and your IP being blocked from accessing this service.&nbsp;
+          The service maintainer <strong>reserves sole authority</strong> on deciding whether a piece of content is considered abusive or not.
+        </p>
       </React.Fragment>
   showHelp = useCallback showHelp, [openDialog]
 
