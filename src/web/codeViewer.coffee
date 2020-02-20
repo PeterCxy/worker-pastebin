@@ -1,54 +1,43 @@
-import React from "react"
+import React, { useState } from "react"
 import hljs from "highlight.js"
+import * as hooks from "./hooks"
 import LinkButton from "./util/linkButton"
 
 MAX_HIGHLIGHT_LENGTH = 10 * 1024 # 10 KiB
 
-class CodeViewer extends React.Component
-  constructor: (props) ->
-    super props
-    @state =
-      code: "Loading..."
-      highlight: true
+export default CodeViewer = (props) ->
+  [code, setCode] = useState "Loading..."
+  [highlight, setHighlight] = useState true
 
-  componentDidMount: ->
-    resp = await fetch "/paste/#{@props.id}?original"
+  # Fetch the content on first mount (and after first render)
+  hooks.useFetchContent props.id, (meta, resp) ->
     resp = await resp.text()
-    if resp.length < MAX_HIGHLIGHT_LENGTH
-      resp = hljs.highlightAuto(resp).value
+    if meta.length < MAX_HIGHLIGHT_LENGTH
+      setCode hljs.highlightAuto(resp).value
     else
-      @setState
-        highlight: false
+      setHighlight false
+      setCode resp
 
-    @setState
-      code: resp
-
-  render: ->
-    if @state.switchToHome
-      return <Redirect push to="/paste/text" />
-
-    <div className="content-pastebin">
-      <div
-        className="content-code-viewer"
-      >
-        {
-          if @state.highlight
-            <pre
-              dangerouslySetInnerHTML={{__html: @state.code}}
-            />
-          else
-            <pre>{@state.code}</pre>
-        }
-      </div>
-      <div className="content-buttons">
-        <LinkButton
-          className="button-blue"
-          push
-          to="/paste/text"
-        >
-          New Paste
-        </LinkButton>
-      </div>
+  <div className="content-pastebin">
+    <div
+      className="content-code-viewer"
+    >
+      {
+        if highlight
+          <pre
+            dangerouslySetInnerHTML={{__html: code}}
+          />
+        else
+          <pre>{code}</pre>
+      }
     </div>
-
-export default CodeViewer
+    <div className="content-buttons">
+      <LinkButton
+        className="button-blue"
+        push
+        to="/paste/text"
+      >
+        New Paste
+      </LinkButton>
+    </div>
+  </div>

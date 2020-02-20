@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import ReactModal from "react-modal"
 
 # Simple abstraction for a toggling state
@@ -91,3 +91,31 @@ export usePaste = (openDialog, callback) ->
     pasting,
     progress
   ]
+
+# An effect that fetches the original pasted content,
+# and then fires a callback that handles metadata and the response body
+# it also stores the meta into a state and returns it every time
+# this hook gets called, so callbacks are not necessary
+# and if callback is not present, then the response body
+# would simply be thrown away
+export useFetchContent = (id, callback) ->
+  [meta, setMeta] = useState null
+
+  doFetch = ->
+    resp = await fetch "/paste/#{id}?original"
+    length = resp.headers.get 'content-length'
+    mime = resp.headers.get 'content-type'
+    [_, name] = resp.headers.get 'content-disposition'
+                .split 'filename*='
+    newMeta =
+      name: name
+      mime: mime
+      length: length
+    setMeta newMeta
+    # We have to pass newMeta to callback because
+    # the callback will not be aware of the meta update
+    callback newMeta, resp if callback
+
+  # Run the effect once on mount
+  useEffect doFetch, []
+  meta
