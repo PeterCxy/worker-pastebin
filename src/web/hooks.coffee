@@ -50,21 +50,39 @@ export useDialog = ->
     useCallback(renderDialog, [dialogOpen, dialogMsg])
   ]
 
+# A hook to automatically store XHR progress in states
+export useXhrProgress = ->
+  [progressUp, setProgressUp] = useState 0
+  [progressDown, setProgressDown] = useState 0
+
+  progressHandler = (update) -> (e) ->
+    update e.loaded / e.total if e.lengthComputable
+
+  beginXHR = ->
+    setProgressUp 0
+    setProgressDown 0
+    xhr = new XMLHttpRequest()
+    xhr.addEventListener "progress", progressHandler setProgressDown
+    xhr.upload.addEventListener "progress", progressHandler setProgressUp
+    xhr
+
+  [
+    progressUp,
+    progressDown,
+    useCallback beginXHR, []
+  ]
+
 # Handles shared file-uploading logic between text / binary pasting
 export usePaste = (openDialog, callback) ->
   [pasting, setPasting] = useState false
-  [progress, setProgress] = useState 0
+  [progress, _, beginXHR] = useXhrProgress()
 
   doPaste = (name, mime, content, transformUrl) ->
     # Unfortunately we have to all resort to using XHR here
-    setProgress 0
     setPasting true
 
     # Build the XHR
-    xhr = new XMLHttpRequest()
-    xhr.upload.addEventListener "progress", (e) ->
-      if e.lengthComputable
-        setProgress e.loaded / e.total
+    xhr = beginXHR()
     xhr.addEventListener "readystatechange", ->
       if xhr.readyState == XMLHttpRequest.DONE
         setPasting false
@@ -87,10 +105,26 @@ export usePaste = (openDialog, callback) ->
   [
     # our paste only depends on *setting* states, no reading required
     # but all the callback it reads from its closure may change
-    useCallback(doPaste, [openDialog, callback]),
+    useCallback(doPaste, [openDialog, callback, beginXHR]),
     pasting,
     progress
   ]
+
+# Asynchronous useMemo
+# defVal is the value before the factory function completes
+# returns the current value, and if factory has not completed
+#   then return defVal.
+# Factory is only executed once
+export useAsyncMemo = (defVal, factory, deps) ->
+  [state, setState] = useState defVal
+
+  exec = ->
+    do ->
+      setState await factory()
+    return
+
+  useEffect exec, deps
+  state
 
 # An effect that fetches the original pasted content,
 # and then fires a callback that handles metadata and the response body
@@ -99,8 +133,6 @@ export usePaste = (openDialog, callback) ->
 # and if callback is not present, then the response body
 # would simply be thrown away
 export useFetchContent = (id, callback) ->
-  [meta, setMeta] = useState null
-
   doFetch = ->
     resp = await fetch "/paste/#{id}?original"
     length = resp.headers.get 'content-length'
@@ -111,11 +143,10 @@ export useFetchContent = (id, callback) ->
       name: name
       mime: mime
       length: length
-    setMeta newMeta
     # We have to pass newMeta to callback because
     # the callback will not be aware of the meta update
     callback newMeta, resp if callback
+    return newMeta
 
-  # Run the effect once on mount
-  useEffect doFetch, []
-  meta
+  # Use async memo
+  useAsyncMemo null, doFetch, []

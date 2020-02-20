@@ -1,132 +1,127 @@
-import React from "react"
+import React, { useState, useEffect, useCallback, useMemo } from "react"
 import LinkButton from "./util/linkButton"
+import * as hooks from "./hooks"
 import * as crypto from "../crypto"
 import * as util from "../util"
 
-class FileDecrypter extends React.Component
-  constructor: (props) ->
-    super props
-    @originalUrl = "/paste/#{props.id}?original"
-    # We simply let it fail if there's no key / iv provided in window.location.hash
-    # also we don't care about decryption failure. Just let it look like a broken page
-    # if someone tries to brute-force
+export default FileDecrypter = (props) ->
+  [downloading, setDownloading] = useState false
+  [decrypting, setDecrypting] = useState false
+  [downloaded, setDownloaded] = useState null
+
+  # Fetch credentials from location once
+  fetchCredentials = ->
     [key, iv] = window.location.hash.replace("#", "").split '+'
-    @state =
-      name: null
-      mime: null
-      length: null
-      downloading: false
-      decrypting: false
-      progress: 0
+    return
       key: key
       iv: iv
-      downloaded: null
+  credentials = useMemo fetchCredentials, []
 
-  componentDidMount: ->
-    # Fetch metadata to show to user
-    # We can use fetch API here
-    resp = await fetch @originalUrl
-    # Fail silently as explained above
-    return if not resp.ok
-    mime = resp.headers.get 'content-type'
-    [_, name] = resp.headers.get 'content-disposition'
-                .split 'filename*='
-    [name, mime] = await crypto.decryptMetadata @state.key, @state.iv, name, mime
-    @setState
-      name: name
-      mime: mime
-      length: parseInt resp.headers.get 'content-length'
+  # Handle object URL revocation before unmount
+  # (though this will be fired every time `downloaded` changes,
+  #  but that only changes when we finish downloading, and
+  #  also the registered clean-up will be run after the final unmount)
+  # (it is necessary to bind to "downloaded" otherwise the closure
+  #  will hold stale references)
+  urlRevokeHandler = ->
+    return ->
+      URL.revokeObjectURL downloaded if downloaded
+  useEffect urlRevokeHandler, [downloaded]
 
-  componentWillUnmount: ->
-    if @state.downloaded
-      URL.revokeObjectURL @state.downloaded
+  # Fetch meta (only fetches on first mount; subsequent calls return the same state)
+  origMeta = hooks.useFetchContent props.id
 
-  downloadFile: =>
-    @setState
-      downloading: true
-      decrypting: false
-      progress: 0
-    # For progress, we have to use XHR
-    xhr = new XMLHttpRequest()
+  # Create decrypted metadata
+  decryptMeta = ->
+    if (not origMeta) or (not credentials)
+      return null
+    else
+      [name, mime] = await crypto.decryptMetadata credentials.key, credentials.iv,
+                            origMeta.name, origMeta.mime
+      return
+        name: name
+        mime: mime
+        length: origMeta.length
+  meta = hooks.useAsyncMemo null, decryptMeta, [origMeta, credentials]
+
+  # Handle decryption
+  decryptFile = (file) ->
+    setDecrypting true
+    decrypted = await crypto.decryptFile credentials.key, credentials.iv, file
+    blob = new Blob [decrypted],
+      type: meta.mime
+    setDownloaded URL.createObjectURL blob
+  decryptFile = useCallback decryptFile, [credentials, meta]
+
+  # Handle file downloads
+  # We don't need to share logic via hooks with CodeViewer
+  # because this is a whole new fetch session that CodeViewer
+  # never shares.
+  [_, progress, beginXHR] = hooks.useXhrProgress()
+  downloadFile = ->
+    setDownloading true
+    xhr = beginXHR()
     xhr.responseType = "arraybuffer"
-    xhr.addEventListener 'progress', (e) =>
-      if e.lengthComputable
-        @setState
-          progress: e.loaded / e.total
     xhr.addEventListener 'readystatechange', =>
       if xhr.readyState == XMLHttpRequest.DONE
         if xhr.status == 200
-          await @decryptFile xhr.response
-        @setState
-          downloading: false
-    xhr.open 'GET', @originalUrl
+          await decryptFile xhr.response
+        setDownloading false
+    xhr.open 'GET', "/paste/#{props.id}?original"
     xhr.send()
+  downloadFile = useCallback downloadFile, [meta, decryptFile]
 
-  decryptFile: (file) =>
-    @setState
-      decrypting: true
-    decrypted = await crypto.decryptFile @state.key, @state.iv, file
-    blob = new Blob [decrypted],
-      type: @state.mime
-    @setState
-      decrypting: false
-      blob: blob
-      downloaded: URL.createObjectURL blob
-
-  render: ->
-    <div className="content-pastebin">{
-      if not @state.name
-        <p>Loading...</p>
-      else
-        <div className="content-file-info">
-          <p>{@state.name}</p>
-          <p>{@state.mime}</p>
-          <p>{util.humanFileSize @state.length}</p>
-          {
-            if not @state.downloaded
-              <button
-                className="button-blue"
-                disabled={@state.downloading}
-                onClick={@downloadFile}
-              >{
-                if not @state.downloading
-                  "Download"
-                else if @state.decrypting
-                  "Decrypting"
-                else
-                  util.progressText @state.progress
-              }</button>
-            else
-              # Use an actual link here instead of triggering click
-              # on a hidden link, because on some browsers it doesn't work
-              <a
-                className="button-blue"
-                href={@state.downloaded}
-                download={@state.name}
-              >
-                Save File
-              </a>
-          }{
-            # In-browser previewing for certain file types
-            # we can't just use this for all because it cannot handle file name
-            @state.downloaded and util.shouldShowInline(@state.mime) and
-              <a
-                className="button-blue"
-                href={@state.downloaded}
-                target="_blank"
-              >
-                Preview
-              </a>
-          }
-          <br/>
-          <LinkButton
-            className="button-blue"
-            push
-            to="/paste/text"
-          >
+  <div className="content-pastebin">{
+    if not meta
+      <p>Loading...</p>
+    else
+      <div className="content-file-info">
+        <p>{meta.name}</p>
+        <p>{meta.mime}</p>
+        <p>{util.humanFileSize meta.length}</p>
+        {
+          if not downloaded
+            <button
+              className="button-blue"
+              disabled={downloading}
+              onClick={downloadFile}
+            >{
+              if not downloading
+                "Download"
+              else if decrypting
+                "Decrypting"
+              else
+                util.progressText progress
+            }</button>
+          else
+            # Use an actual link here instead of triggering click
+            # on a hidden link, because on some browsers it doesn't work
+            <a
+              className="button-blue"
+              href={downloaded}
+              download={meta.name}
+            >
+              Save File
+            </a>
+        }{
+          # In-browser previewing for certain file types
+          # we can't just use this for all because it cannot handle file name
+          downloaded and util.shouldShowInline(meta.mime) and
+            <a
+              className="button-blue"
+              href={downloaded}
+              target="_blank"
+            >
+              Preview
+            </a>
+        }
+        <br/>
+        <LinkButton
+          className="button-blue"
+          push
+          to="/paste/text"
+        >
             Home
-          </LinkButton>
-        </div>
-    }</div>
-
-export default FileDecrypter
+        </LinkButton>
+      </div>
+  }</div>
