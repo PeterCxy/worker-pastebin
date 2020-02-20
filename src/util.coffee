@@ -16,7 +16,8 @@ MAX_FILENAME_LENGTH = 255 # bytes
 
 # Validate content-length header
 validateLength = (req) ->
-  (Number.parseInt req.headers.get "content-length") <= MAX_UPLOAD_SIZE
+  len = Number.parseInt req.headers.get "content-length"
+  len <= MAX_UPLOAD_SIZE && len > 0
 
 # Only accept paths like `/paste/:file_name`
 # No further slahses are supported
