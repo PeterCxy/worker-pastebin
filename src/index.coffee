@@ -1,4 +1,5 @@
 import * as util from './util'
+import * as crypto from './crypto'
 import S3 from './aws/s3'
 import config from '../config.json'
 import indexHtml from '../worker/index.html'
@@ -7,6 +8,8 @@ FRONTEND_PATHS = [
   '/', '/paste/text', '/paste/binary',
   '/paste/text/', '/paste/binary/'
 ]
+
+FRONTEND_SHA256 = null
 
 s3 = new S3 config
 
@@ -20,18 +23,30 @@ buildInvalidResponse = (msg) ->
   new Response msg,
     status: 400
 
-buildFrontendResponse = ->
+buildFrontendResponse = (req) ->
+  if req.headers.has "if-none-match"
+    if req.headers.get("if-none-match") == "W/" + FRONTEND_SHA256
+      # Skip this response if the frontend was not updated
+      return new Response null,
+        status: 304
+
   new Response indexHtml,
     status: 200
     headers:
       'content-type': 'text/html'
+      'etag': "W/" + FRONTEND_SHA256
 
 handleRequest = (event) ->
+  # Ensure we have a SHA256 value of frontend first
+  # This will be used as ETag
+  if not FRONTEND_SHA256
+    FRONTEND_SHA256 = crypto.hex await crypto.SHA256 indexHtml
+
   # Handle request for static home page first
   if event.request.method == "GET"
     parsedURL = new URL event.request.url
     if parsedURL.pathname in FRONTEND_PATHS
-      return buildFrontendResponse()
+      return buildFrontendResponse event.request 
 
   # Validate file name first, since this is shared logic
   file = util.getFileName event.request.url
@@ -90,7 +105,7 @@ handleGET = (req, file) ->
   else if req.url.endsWith "crypt"
     # We need frontend to handle encrypted files
     # The key is passed after the hash ('#'), unavailable to server
-    return buildFrontendResponse()
+    return buildFrontendResponse req
   # The full path to the original file
   fullPath = files.Contents[0].Key
   fileName = fullPath.split '/'
@@ -113,7 +128,7 @@ handleGET = (req, file) ->
     isText = util.isText resp.headers.get 'content-type'
     isBrowser = util.isBrowser req
     if isText and isBrowser
-      return buildFrontendResponse()
+      return buildFrontendResponse req 
 
   # Build response headers
   headers =
