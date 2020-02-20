@@ -65,8 +65,9 @@ isBrowser = (req) ->
 
 # Process progress text
 progressText = (progress) ->
-  txt = (progress * 100).toFixed(2) + "%"
-  if progress < 0.1
+  progress = progress * 100
+  txt = progress.toFixed(2) + "%"
+  if progress < 10
     "0" + txt
   else
     txt
