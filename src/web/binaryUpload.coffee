@@ -7,7 +7,6 @@ import * as crypto from "../crypto"
 import * as util from "../util"
 
 export default BinaryUpload = ->
-  [openDialog, renderDialog] = hooks.useDialog()
   [encrypt, toggleEncrypt] = hooks.useToggle false
   [encrypting, setEncrypting] = useState false
   [file, setFile] = useState null
@@ -15,8 +14,7 @@ export default BinaryUpload = ->
   # Paste hook and event
   clearFile = (status) ->
     setFile null if status == 200
-  [doPaste, pasting, progress] = hooks.usePaste openDialog,
-    useCallback clearFile, []
+  [doPaste, pasting, progress] = hooks.usePaste useCallback clearFile, []
 
   # Dropzone hook and event
   onDrop = (files) ->
@@ -38,7 +36,6 @@ export default BinaryUpload = ->
   doUpload = useCallback doUpload, [file, encrypt, doPaste]
 
   <div className="content-pastebin">
-    {renderDialog()}
     <section className="container">
       <div {...getRootProps({className: 'dropzone'})}>
         <input {...getInputProps()} />
@@ -54,7 +51,7 @@ export default BinaryUpload = ->
       </aside>
     </section>
     <div className="content-buttons">
-      <HelpButton openDialog={openDialog} />
+      <HelpButton />
       <button
         className="button-blue"
         disabled={pasting}

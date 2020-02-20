@@ -1,12 +1,12 @@
-import React from "react"
+import React, { useContext, useCallback } from "react"
+import DialogContext from "./dialogContext"
 import * as util from "../util"
 
-class HelpButton extends React.Component
-  constructor: (props) ->
-    super props
+export default HelpButton = ->
+  openDialog = useContext DialogContext
 
-  showHelp: =>
-    @props.openDialog do =>
+  showHelp = ->
+    openDialog do ->
       <React.Fragment>
         <p><strong>Angry.Im Pastebin Service</strong><br/>
            Source code:&nbsp;
@@ -31,13 +31,11 @@ class HelpButton extends React.Component
           The decryption will also be done entirely in your browser. Therefore, it is not supported to access encrypted files outside of a modern browser.
         </p>
       </React.Fragment>
+  showHelp = useCallback showHelp, [openDialog]
 
-  render: ->
-    <button
-      className="button-blue"
-      onClick={@showHelp}
-    >
-      Help
-    </button>
-
-export default HelpButton
+  <button
+    className="button-blue"
+    onClick={showHelp}
+  >
+    Help
+  </button>

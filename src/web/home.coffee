@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom"
 import { AnimatedSwitch, spring } from 'react-router-transition'
 import * as hooks from "./hooks"
+import DialogContext from "./dialogContext"
 import Pastebin from "./pastebin"
 import BinaryUpload from "./binaryUpload"
 import FileViewerDispatcher from "./fileViewerDispatcher"
@@ -32,33 +33,35 @@ export default Home = ->
 
   <div className="content-wrapper">
     <div className="content">
-      <Router>
-        <AnimatedSwitch
-          atEnter={atEnter}
-          atLeave={atLeave}
-          atActive={atActive}
-          mapStyles={mapStyles}
-          className="switch-wrapper"
-        >
-          <Redirect exact from="/" to="/paste/text" />
-          {
-            # Use `render` instead of `component` to prevent re-rendering the child
-            # when parent is re-rendered (however this prevents passing match props)
-          }
-          <Route
-            exact path="/paste/text"
-            render={() => <Pastebin openDialog={openDialog}/>}
-          />
-          <Route
-            exact path="/paste/binary"
-            render={() => <BinaryUpload openDialog={openDialog}/>}
-          />
-          <Route
-            path="/paste/:id"
-            component={FileViewerDispatcher}
-          />
-        </AnimatedSwitch>
-      </Router>
+      <DialogContext.Provider value={openDialog}>
+        <Router>
+          <AnimatedSwitch
+            atEnter={atEnter}
+            atLeave={atLeave}
+            atActive={atActive}
+            mapStyles={mapStyles}
+            className="switch-wrapper"
+          >
+            <Redirect exact from="/" to="/paste/text" />
+            {
+              # Use `render` instead of `component` to prevent re-rendering the child
+              # when parent is re-rendered (however this prevents passing match props)
+            }
+            <Route
+              exact path="/paste/text"
+              render={() => <Pastebin />}
+            />
+            <Route
+              exact path="/paste/binary"
+              render={() => <BinaryUpload />}
+            />
+            <Route
+              path="/paste/:id"
+              component={FileViewerDispatcher}
+            />
+          </AnimatedSwitch>
+        </Router>
+      </DialogContext.Provider>
     </div>
     {renderDialog()}
   </div>

@@ -1,19 +1,17 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useContext } from "react"
 import * as hooks from "./hooks"
 import HelpButton from "./helpButton"
 import LinkButton from "./util/linkButton"
 import ContentEditable from "./util/contentEditable"
 
 export default Pastebin = ->
-  [openDialog, renderDialog] = hooks.useDialog()
   [highlight, toggleHighlight] = hooks.useToggle false
   [text, setText] = useState ""
 
   # Paste hook and events
   clearText = (status) ->
     setText "" if status == 200
-  [doPaste, pasting, _] = hooks.usePaste openDialog,
-    useCallback clearText, []
+  [doPaste, pasting, _] = hooks.usePaste useCallback clearText, []
 
   onEditTextUpdate = (ev) ->
     setText ev.target.value
@@ -28,7 +26,6 @@ export default Pastebin = ->
   paste = useCallback paste, [text, doPaste]
 
   <div className="content-pastebin">
-    {renderDialog()}
     <ContentEditable
       className="content-pastebin-edit"
       onUpdate={onEditTextUpdate}
@@ -37,7 +34,7 @@ export default Pastebin = ->
       plainText
     />
     <div className="content-buttons">
-      <HelpButton openDialog={openDialog} />
+      <HelpButton />
       <button
         className="button-blue"
         onClick={toggleHighlight}

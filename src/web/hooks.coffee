@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useEffect } from "react"
+import React, { useState, useCallback, useEffect, useContext } from "react"
 import ReactModal from "react-modal"
+import DialogContext from "./dialogContext"
 
 # Simple abstraction for a toggling state
 export useToggle = (defVal) ->
@@ -73,7 +74,8 @@ export useXhrProgress = ->
   ]
 
 # Handles shared file-uploading logic between text / binary pasting
-export usePaste = (openDialog, callback) ->
+export usePaste = (callback) ->
+  openDialog = useContext DialogContext
   [pasting, setPasting] = useState false
   [progress, _, beginXHR] = useXhrProgress()
 
