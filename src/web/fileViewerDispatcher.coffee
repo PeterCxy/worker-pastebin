@@ -2,14 +2,9 @@ import React from "react"
 import CodeViewer from "./codeViewer"
 import FileDecrypter from "./fileDecrypter"
 
-class FileViewerDispatcher extends React.Component
-  constructor: (props) ->
-    super props
-
-  render: ->
-    if @props.location.search == "?crypt"
-      <FileDecrypter id={@props.match.params.id} />
-    else
-      <CodeViewer id={@props.match.params.id} />
-
-export default FileViewerDispatcher
+# Determine if we want to use CodeViewer or FileDecrypter
+export default FileViewerDispatcher = (props) ->
+  if props.location.search == "?crypt"
+    <FileDecrypter id={props.match.params.id} />
+  else
+    <CodeViewer id={props.match.params.id} />
