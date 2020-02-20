@@ -1,6 +1,15 @@
 import React, { useState } from "react"
 import ReactModal from "react-modal"
 
+# Simple abstraction for a toggling state
+export useToggle = (defVal) ->
+  [state, setState] = useState defVal
+
+  toggle = ->
+    setState (prev) -> not prev
+
+  [state, toggle]
+
 # A hook to support opening dialogs from the code
 # returns [openDialog, renderDialog]
 # renderDialog should always be called somewhere
@@ -31,3 +40,39 @@ export useDialog = ->
     </ReactModal>
 
   [openDialog, renderDialog]
+
+# Handles shared file-uploading logic between text / binary pasting
+export usePaste = (openDialog, transformUrl, callback) ->
+  [pasting, setPasting] = useState false
+  [progress, setProgress] = useState 0
+
+  doPaste = (name, mime, content) ->
+    # Unfortunately we have to all resort to using XHR here
+    setProgress 0
+    setPasting true
+
+    # Build the XHR
+    xhr = new XMLHttpRequest()
+    xhr.upload.addEventListener "progress", (e) ->
+      if e.lengthComputable
+        setProgress e.loaded / e.total
+    xhr.addEventListener "readystatechange", ->
+      if xhr.readyState == XMLHttpRequest.DONE
+        setPasting false
+        openDialog do ->
+          if xhr.status == 200
+            url = xhr.responseText
+            url = transformUrl url if transformUrl
+            <a href={url} target="_blank">
+              https://{window.location.hostname}{url}
+            </a>
+          else
+            xhr.responseText
+        callback xhr.status, xhr.responseText if callback
+    
+    # Handle uploading
+    xhr.open 'PUT', "/paste/" + name
+    xhr.setRequestHeader "content-type", mime
+    xhr.send content
+
+  [doPaste, pasting, progress]
