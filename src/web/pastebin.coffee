@@ -17,9 +17,15 @@ export default Pastebin = ->
 
   onEditTextUpdate = (ev) ->
     setText ev.target.value
+  # onEditTextUpdate depends on absolutely nothing for reading
+  onEditTextUpdate = useCallback onEditTextUpdate, []
 
   paste = ->
+    # We force a single file name and mime type on web-pasted content
     doPaste "web_paste.txt", "text/plain", text
+  # Paste depends only on the actual text
+  # and of course the function doPaste
+  paste = useCallback paste, [text, doPaste]
 
   <div className="content-pastebin">
     {renderDialog()}
