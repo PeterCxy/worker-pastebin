@@ -34,6 +34,7 @@ export default BinaryUpload = ->
       doPaste name, mime, encrypted, (url) ->
         url + "?crypt#" + key + "+" + iv
   doUpload = useCallback doUpload, [file, encrypt, doPaste]
+  doUpload = hooks.useCheckSize file?.size, doUpload
 
   <div className="content-pastebin">
     <section className="container">

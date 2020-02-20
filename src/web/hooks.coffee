@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, useContext } from "react"
 import ReactModal from "react-modal"
 import DialogContext from "./dialogContext"
+import * as util from "../util"
 
 # Simple abstraction for a toggling state
 export useToggle = (defVal) ->
@@ -152,3 +153,21 @@ export useFetchContent = (id, callback) ->
 
   # Use async memo
   useAsyncMemo null, doFetch, []
+
+# Convenient short-hand for checking content length before upload
+# Wrap this around some function to get the length-checking behavior for free
+# Returned function only calls callback if the content length is within limits
+# Otherwise a dialog will be opened
+export useCheckSize = (size, callback) ->
+  openDialog = useContext DialogContext
+
+  doCheck = ->
+    if size >= util.MAX_UPLOAD_SIZE
+      openDialog do ->
+        "Maximum Upload Size: #{util.humanFileSize util.MAX_UPLOAD_SIZE}"
+    else if size == 0
+      openDialog "Empty content is not allowed."
+    else
+      callback arguments
+
+  useCallback doCheck, [size, callback, openDialog]

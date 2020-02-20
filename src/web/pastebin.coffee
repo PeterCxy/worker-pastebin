@@ -24,6 +24,7 @@ export default Pastebin = ->
   # Paste depends only on the actual text
   # and of course the function doPaste
   paste = useCallback paste, [text, doPaste]
+  paste = hooks.useCheckSize text.length, paste
 
   <div className="content-pastebin">
     <ContentEditable
