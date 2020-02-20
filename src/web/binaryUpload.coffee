@@ -7,7 +7,7 @@ import * as crypto from "../crypto"
 import * as util from "../util"
 
 export default BinaryUpload = ->
-  [encrypt, toggleEncrypt] = hooks.useToggle false
+  [encrypt, toggleEncrypt] = hooks.useToggle true
   [encrypting, setEncrypting] = useState false
   [file, setFile] = useState null
 

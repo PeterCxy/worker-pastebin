@@ -28,7 +28,8 @@ export default HelpButton = ->
           so that they will <strong>not</strong> be sent to the server as part of the URL when you access the file later from your browser.
         </p>
         <p>
-          The decryption will also be done entirely in your browser. Therefore, it is not supported to access encrypted files outside of a modern browser.
+          The decryption will also be done entirely in your browser. Therefore, it is not supported to access encrypted files outside of a modern browser.&nbsp;
+          If you plan to download the shared file from outside the browser (e.g. command line) or on a low-performance device, use <strong>"Encryption: OFF"</strong>.
         </p>
       </React.Fragment>
   showHelp = useCallback showHelp, [openDialog]
