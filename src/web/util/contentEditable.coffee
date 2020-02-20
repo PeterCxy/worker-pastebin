@@ -67,6 +67,7 @@ class ContentEditable extends React.Component
     selection.deleteFromDocument()
     selection.getRangeAt 0
             .insertNode document.createTextNode paste
+    @emitUpdate()
     ev.preventDefault()
 
   onKeyDown: (ev) =>
