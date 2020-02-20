@@ -51,11 +51,11 @@ export useDialog = ->
   ]
 
 # Handles shared file-uploading logic between text / binary pasting
-export usePaste = (openDialog, transformUrl, callback) ->
+export usePaste = (openDialog, callback) ->
   [pasting, setPasting] = useState false
   [progress, setProgress] = useState 0
 
-  doPaste = (name, mime, content) ->
+  doPaste = (name, mime, content, transformUrl) ->
     # Unfortunately we have to all resort to using XHR here
     setProgress 0
     setPasting true
@@ -86,7 +86,8 @@ export usePaste = (openDialog, transformUrl, callback) ->
 
   [
     # our paste only depends on *setting* states, no reading required
-    useCallback(doPaste, []),
+    # but all the callback it reads from its closure may change
+    useCallback(doPaste, [openDialog, callback]),
     pasting,
     progress
   ]

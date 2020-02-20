@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import * as hooks from "./hooks"
 import HelpButton from "./helpButton"
 import LinkButton from "./util/linkButton"
@@ -8,8 +8,12 @@ export default Pastebin = ->
   [openDialog, renderDialog] = hooks.useDialog()
   [highlight, toggleHighlight] = hooks.useToggle false
   [text, setText] = useState ""
-  [doPaste, pasting, _] = hooks.usePaste openDialog, null, (status) ->
+
+  # Paste hook and events
+  clearText = (status) ->
     setText "" if status == 200
+  [doPaste, pasting, _] = hooks.usePaste openDialog,
+    useCallback clearText, []
 
   onEditTextUpdate = (ev) ->
     setText ev.target.value
