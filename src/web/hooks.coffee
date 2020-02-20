@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import ReactModal from "react-modal"
 
 # Simple abstraction for a toggling state
@@ -8,7 +8,11 @@ export useToggle = (defVal) ->
   toggle = ->
     setState (prev) -> not prev
 
-  [state, toggle]
+  [
+    state,
+    # toggle does not depend on reading any state
+    useCallback(toggle, [])
+  ]
 
 # A hook to support opening dialogs from the code
 # returns [openDialog, renderDialog]
@@ -39,7 +43,12 @@ export useDialog = ->
       </div>
     </ReactModal>
 
-  [openDialog, renderDialog]
+  [
+    # openDialog only *sets* state, and does not read
+    useCallback(openDialog, []),
+    # renderDialog basically depends on all state we have
+    useCallback(renderDialog, [dialogOpen, dialogMsg])
+  ]
 
 # Handles shared file-uploading logic between text / binary pasting
 export usePaste = (openDialog, transformUrl, callback) ->
@@ -75,4 +84,9 @@ export usePaste = (openDialog, transformUrl, callback) ->
     xhr.setRequestHeader "content-type", mime
     xhr.send content
 
-  [doPaste, pasting, progress]
+  [
+    # our paste only depends on *setting* states, no reading required
+    useCallback(doPaste, []),
+    pasting,
+    progress
+  ]
