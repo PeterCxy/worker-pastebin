@@ -2,6 +2,7 @@ import * as util from './util'
 import * as crypto from './crypto'
 import S3 from './aws/s3'
 import config from '../config.json'
+import configInsec from '../config.insecure.json'
 import indexHtml from '../worker/index.html'
 
 FRONTEND_PATHS = [
@@ -66,8 +67,14 @@ handlePUT = (req, file) ->
     return buildInvalidResponse "Maximum upload size: " + util.MAX_UPLOAD_SIZE
   if file.length > util.MAX_FILENAME_LENGTH
     return buildInvalidResponse "File name too long (max #{util.MAX_FILENAME_LENGTH})"
-  
-  # Generate a valid ID first
+
+  if file != configInsec.remote_fetch_magic
+    handleClientUpload req, file
+  else
+    # If the file name is magic, we fetch content from remote
+    handleRemoteFetch req
+
+generateID = ->
   id = null
   path = null
   loop
@@ -76,6 +83,11 @@ handlePUT = (req, file) ->
     files = await s3.listObjects
       prefix: path
     break if !files.Contents or files.Contents.length == 0
+  [id, path]
+
+handleClientUpload = (req, file) ->
+  # Generate a valid ID first
+  [id, path] = await generateID()
   
   path = path + "/" + file
   len = req.headers.get "content-length"
@@ -154,5 +166,69 @@ handleGET = (req, file) ->
     status: resp.status
     headers: headers
 
+handleRemoteFetch = (req) ->
+  # We support fetching files from a remote URL
+  # given that the length is within a separate constraint
+  # Determine if we are actually getting an URL first
+  if req.headers.get("content-type") != "text/plain"
+    return buildInvalidResponse "Invalid URL"
+
+  if !req.headers.has("content-length") or req.headers.get("content-length") >= 1024
+    return buildInvalidResponse "Invalid URL"
+  
+  # Get the URL
+  url = await req.text()
+
+  # Validate URL first
+  try
+    url = new URL url
+    throw "WTF" if url.protocol != "http:" and url.protocol != "https:"
+  catch err
+    return buildInvalidResponse "Invalid URL"
+
+  # Request the remote content
+  remote_res = await fetch url,
+    redirect: "follow"
+  if remote_res.status != 200
+    return buildInvalidResponse "Remote server returned error status"
+
+  # Check the length first
+  # TODO: Maybe we need to limit another length for remote fetch pastes
+  if !remote_res.headers.has("content-length") or remote_res.headers.get("content-length") > util.MAX_UPLOAD_SIZE
+    return buildInvalidResponse "Remote file too large"
+
+  # Try to determine the file name
+  path_splitted = url.pathname.split '/'
+  fileName = path_splitted[path_splitted.length - 1]
+  if remote_res.headers.has "content-disposition"
+    dispos = remote_res.headers.get "content-disposition"
+    for item of dispos.split ';'
+      item = item.trim()
+      if item.startsWith("filename=") or item.startsWith("filename*=")
+        fileName = item.replace "filename=", ""
+                      .replace "filename*=", ""
+                      .replace "\"", ""
+        break
+  console.log fileName
+
+  if fileName.length > util.MAX_FILENAME_LENGTH
+    return buildInvalidResponse "Remote file name too long"
+
+  # Begin uploading
+  [id, path] = await generateID()
+  path = path + "/" + fileName
+  len = remote_res.headers.get "content-length"
+
+  try
+    await s3.putObject path, remote_res.body,
+      ContentType: remote_res.headers.get "content-type"
+      ContentLength: len
+  catch err
+    console.log err
+    return buildInvalidResponse err
+
+  # Simply return the path in body
+  new Response "/paste/" + id,
+    status: 200
 
 export default main
