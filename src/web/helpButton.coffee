@@ -10,8 +10,8 @@ export default HelpButton = ->
       <React.Fragment>
         <p><strong>Angry.Im Pastebin Service</strong><br/>
            Source code:&nbsp;
-          <a target="_blank" href="https://github.com/PeterCxy/worker-pastebin">
-            https://github.com/PeterCxy/worker-pastebin
+          <a target="_blank" href="https://cgit.typeblog.net/worker-pastebin">
+            https://cgit.typeblog.net/worker-pastebin
           </a>
         </p>
         <p>
