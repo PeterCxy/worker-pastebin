@@ -44,7 +44,7 @@ encryptFile = (file) ->
   # Encrypt
   encrypted = await crypto.subtle.encrypt algoParams, key, await file.arrayBuffer()
   name = hex await crypto.subtle.encrypt algoParams, key, utf8Bytes file.name
-  mime = 'binary/' + hex await crypto.subtle.encrypt algoParams, key, utf8Bytes file.type
+  mime = 'application/vnd.angry.paste+' + hex await crypto.subtle.encrypt algoParams, key, utf8Bytes file.type
   exportedKey = hex await crypto.subtle.exportKey 'raw', key
   [exportedKey, hex(iv), name, mime, encrypted]
 
@@ -63,7 +63,7 @@ importKeyAndIv = (key, iv) ->
 decryptMetadata = (key, iv, name, mime) ->
   [key, algoParams] = await importKeyAndIv key, iv
   name = fromUtf8Bytes await crypto.subtle.decrypt algoParams, key, fromHex name
-  mime = fromHex mime.replace /^binary\//, ""
+  mime = fromHex mime.replace /^application\/vnd\.angry\.paste\+/, ""
   mime = fromUtf8Bytes await crypto.subtle.decrypt algoParams, key, mime
   [name, mime]
 
