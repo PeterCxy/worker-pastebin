@@ -112,8 +112,8 @@ class AwsAuth
       @pad(@date.getUTCSeconds()) + "Z"
 
   timeStampYYYYMMDD: ->
-    @date.getUTCFullYear() +
-      @pad(@date.getUTCMonth() + 1) +
-      @pad(@date.getUTCDate())
+    "#{@date.getUTCFullYear()}" +
+      "#{@pad(@date.getUTCMonth() + 1)}" +
+      "#{@pad(@date.getUTCDate())}"
 
 export default AwsAuth
