@@ -22,7 +22,7 @@
     "babel-polyfill": "^6.26.0",
     "coffee-loader": "^1.0.0",
     "coffeescript": "^2.5.1",
-    "css-loader": "^3.4.2",
+    "css-loader": "^7.1.4",
     "detect-browser": "^5.1.1",
     "fast-xml-parser": "^3.16.0",
     "highlight.js": "^10.1.1",
